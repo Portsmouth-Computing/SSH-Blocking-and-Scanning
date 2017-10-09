@@ -9,6 +9,10 @@ else:
 
 with open("/var/log/auth.log") as file:
     for line in file:
-        print(line.strip())
-        time.sleep(1)
+        #print(line.strip().split())
+        was = line.strip().split()
+        if was[5] == "Failed":
+            print(was)
+            time.sleep(0.5)
+#        time.sleep(1)
 
