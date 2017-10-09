@@ -39,10 +39,10 @@ with open("/var/log/auth.log") as file:
             if line_split[8] == "root":
 
                 if line_split[10] not in ip_list or line_split[10] not in ip_temp_list:
-                    if line_split not in ip_temp_list:
+                    if line_split[10] not in ip_temp_list:
                         print("Adding {} to list".format(line_split[10]))
                     ip_stats[line_split[10]] = 1
-                    if line_split[10] != "root":
+                    if line_split[10] != "root" and line_split[10] not in ip_temp_list:
                         ip_temp_list.append(line_split[10])
                         # with open(working_file, "wb")as pickled:
                         #     pickle.dump(ip_list, pickled)
