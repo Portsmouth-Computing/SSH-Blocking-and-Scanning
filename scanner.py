@@ -47,8 +47,8 @@ with open("/var/log/auth.log") as file:
                         # with open(working_file, "wb")as pickled:
                         #     pickle.dump(ip_list, pickled)
                         print("Saved")
-                    else:
-                        print(line_split)
+                    # else:
+                     #    print(line_split)
                 else:
                     try:
                         ip_stats[line_split[10]] += 1
