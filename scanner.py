@@ -41,6 +41,7 @@ with open("/var/log/auth.log") as file:
                         pickle.dump(ip_list, pickled)
                     print("Saved")
                 else:
+                    print(line_split)
                     print(ip_stats)
                     ip_stats[line_split[10]] += 1
                     if ip_stats[line_split[10]] <= 10:
