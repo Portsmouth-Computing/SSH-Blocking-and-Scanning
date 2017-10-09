@@ -16,8 +16,10 @@ try:
     if os.path.exists(working_file):
         with open(working_file, "rb") as pickled:
             ip_list = pickle.load(pickled)
+            print("Loaded Pickle")
     else:
         ip_list = []
+        print("Loaded blank file as pickle did not exist")
 except UnicodeDecodeError as UDE:
     print(UDE, ". Loading blank IP list")
     ip_list = []
