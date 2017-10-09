@@ -6,8 +6,10 @@ if os.geteuid() != 0:
 else:
     print("Running as sudo.")
 
-working_dir = "~/SSH-Blocking-and-Scanning/"
-working_file = "~/SSH-Blocking-and-Scanning/auth_scanning.pickle"
+username = os.getlogin()
+
+working_dir = "/home/{}/SSH-Blocking-and-Scanning/".format(username)
+working_file = "/home/SSH-Blocking-and-Scanning/auth_scanning.pickle".format(username)
 
 if not os.path.exists(working_dir):
     os.makedirs(working_dir)
