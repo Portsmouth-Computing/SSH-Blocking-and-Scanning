@@ -61,9 +61,9 @@ with open("/var/log/auth.log") as file:
 
     #        time.sleep(1)
         elif "Unable to negotiate with" in line.strip():
-            if line_split[9] not in ip_list:
+            if line_split[9] not in ip_list or line_split[9] not in ip_temp_list:
                 print("Adding {} to list from key exchange".format(line_split[9]))
-                ip_list.append(line_split[9])
+                ip_temp_list.append(line_split[9])
         # Also work on a statement that checks lines like `Oct  8 17:27:33 up857256 sshd[15848]: Unable to negotiate with 27.76.249.209 port 56038: no matching key exchange method found. Their offer: diffie-hellman-group1-sha1 [preauth]`
 
 print(ip_stats)
@@ -72,7 +72,7 @@ for ip in ip_temp_list:
     r = requests.get("https://www.ipinfo.io/{}/country".format(ip))
     if r.status_code == 200:
         print("This IP came from {} ({})".format(r.text.strip(),ip))
-        ip_list.append()
+        ip_list.append(ip)
         with open(working_file,"wb") as pickled:
             pickle.dump(ip_list,pickled)
     elif r.status_code == 429:
