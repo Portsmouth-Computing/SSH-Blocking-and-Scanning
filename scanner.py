@@ -1,4 +1,4 @@
-import os, time, pathlib, pickle
+import os, time, pickle
 
 if os.geteuid() != 0:
     print("Please run as sudo.")
@@ -6,13 +6,15 @@ if os.geteuid() != 0:
 else:
     print("Running as sudo.")
 
+working_dir = "~/SSH-Blocking-and-Scanning/"
+working_file = "~/SSH-Blocking-and-Scanning/auth_scanning.pickle"
 
-if not os.path.exists("~/SSH-Blocking-and-Scanning/"):
-    os.makedirs("~/SSH-Blocking-and-Scanning/")
+if not os.path.exists(working_dir):
+    os.makedirs(working_dir)
 
 try:
-    if os.path.exists("~/SSH-Blocking-and-Scanning/auth_scanning.pickle"):
-        with open("~/SSH-Blocking-and-Scanning/auth_scanning.pickle") as pickled:
+    if os.path.exists(working_file):
+        with open(working_file, "rb") as pickled:
             ip_list = pickle.load(pickled)
     else:
         ip_list = []
@@ -34,7 +36,7 @@ with open("/var/log/auth.log") as file:
                     ip_stats[line_split[10]] = 0
                     print("Adding {} to list".format(line_split[10]))
                     ip_list.append(line_split[10])
-                    with open("~/SSH-Blocking-and-Scanning/auth_scanning.pickle", "wb")as pickled:
+                    with open(working_file, "wb")as pickled:
                         pickle.dump(ip_list, pickled)
                     print("Saved")
                 else:
@@ -46,3 +48,4 @@ with open("/var/log/auth.log") as file:
     #        time.sleep(1)
         # Also work on a statement that checks lines like `Oct  8 17:27:33 up857256 sshd[15848]: Unable to negotiate with 27.76.249.209 port 56038: no matching key exchange method found. Their offer: diffie-hellman-group1-sha1 [preauth]`
 
+print(ip_stats)
