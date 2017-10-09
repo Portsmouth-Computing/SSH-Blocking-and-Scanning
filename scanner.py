@@ -43,6 +43,7 @@ with open("/var/log/auth.log") as file:
                 else:
                     print(line_split)
                     print(ip_stats)
+                    print(ip_list)
                     ip_stats[line_split[10]] += 1
                     if ip_stats[line_split[10]] <= 10:
                         print("Failed root from: {}".format(line_split[10]))
