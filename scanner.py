@@ -21,17 +21,18 @@ with open("/var/log/auth.log") as file:
     for line in file:
         # print(line.strip().split())
         was = line.strip().split()
+        if "root" in line.strip():
+            if was[8] == "root":
+                print("Failed root from: {}".format(was[10]))
 
-        if was[8] == "root":
-            print("Failed root from: {}".format(was[10]))
+                if was[10] not in ip_list:
+                    print("Adding {} to list".format(was[10]))
+                    ip_list.append(was[10])
+                    with open("~/SSH-Blocking-and-Scanning/auth_scanning.pickle","wb")as pickled:
+                        pickle.dump(ip_list, pickled)
+                    print("Saved")
 
-            if was[10] not in ip_list:
-                print("Adding {} to list".format(was[10]))
-                ip_list.append(was[10])
-                with open("~/SSH-Blocking-and-Scanning/auth_scanning.pickle","wb")as pickled:
-                    pickle.dump(ip_list, pickled)
-                print("Saved")
-
-            time.sleep(0.5)
-#        time.sleep(1)
+                time.sleep(0.5)
+    #        time.sleep(1)
+        # Also work on a statement that checks lines like `Oct  8 17:27:33 up857256 sshd[15848]: Unable to negotiate with 27.76.249.209 port 56038: no matching key exchange method found. Their offer: diffie-hellman-group1-sha1 [preauth]`
 
