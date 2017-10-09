@@ -10,11 +10,14 @@ else:
 if not os.path.exists("~/SSH-Blocking-and-Scanning/"):
     os.makedirs("~/SSH-Blocking-and-Scanning/")
 
-
-if os.path.exists("~/SSH-Blocking-and-Scanning/auth_scanning.pickle"):
-    with open("~/SSH-Blocking-and-Scanning/auth_scanning.pickle") as pickled:
-        ip_list = pickle.load(pickled)
-else:
+try:
+    if os.path.exists("~/SSH-Blocking-and-Scanning/auth_scanning.pickle"):
+        with open("~/SSH-Blocking-and-Scanning/auth_scanning.pickle") as pickled:
+            ip_list = pickle.load(pickled)
+    else:
+        ip_list = []
+except UnicodeDecodeError as UDE:
+    print(UDE,"Loading blank IP list")
     ip_list = []
 
 with open("/var/log/auth.log") as file:
