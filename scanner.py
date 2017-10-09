@@ -41,8 +41,8 @@ with open("/var/log/auth.log") as file:
                     ip_stats[line_split[10]] += 1
                     if ip_stats[line_split[10]] <= 10:
                         print("Failed root from: {}".format(line_split[10]))
+                        time.sleep(0.5)
 
-                time.sleep(0.5)
     #        time.sleep(1)
         # Also work on a statement that checks lines like `Oct  8 17:27:33 up857256 sshd[15848]: Unable to negotiate with 27.76.249.209 port 56038: no matching key exchange method found. Their offer: diffie-hellman-group1-sha1 [preauth]`
 
