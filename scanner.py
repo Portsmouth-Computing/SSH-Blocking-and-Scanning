@@ -19,6 +19,7 @@ try:
         with open(working_file, "rb") as pickled:
             ip_list = pickle.load(pickled)
             print("Loaded Pickle")
+            print(ip_list)
     else:
         ip_list = []
         print("Loaded blank file as pickle did not exist")
@@ -33,18 +34,22 @@ with open("/var/log/auth.log") as file:
     for line in file:
         # print(line.strip().split())
         line_split = line.strip().split()
-        if "root" in line.strip():
+        if "Failed password for root from" in line.strip():
             if line_split[8] == "root":
 
                 if line_split[10] not in ip_list:
-                    ip_stats[line_split[10]] = 0
+                    ip_stats[line_split[10]] = 1
                     print("Adding {} to list".format(line_split[10]))
                     ip_list.append(line_split[10])
                     with open(working_file, "wb")as pickled:
                         pickle.dump(ip_list, pickled)
                     print("Saved")
                 else:
-                    ip_stats[line_split[10]] += 1
+                    try:
+                        ip_stats[line_split[10]] += 1
+                    except KeyError as KE:
+                        print(KE,"Defaulting to 0")
+                        ip_stats[line_split[10]] = 1
                     if ip_stats[line_split[10]] <= 10:
                         print("Failed root from: {}".format(line_split[10]))
                         time.sleep(0.5)
