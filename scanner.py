@@ -9,7 +9,7 @@ else:
 username = os.getlogin()
 
 working_dir = "/home/{}/SSH-Blocking-and-Scanning/".format(username)
-working_file = "/home/SSH-Blocking-and-Scanning/auth_scanning.pickle".format(username)
+working_file = "/home/{}/SSH-Blocking-and-Scanning/auth_scanning.pickle".format(username)
 
 if not os.path.exists(working_dir):
     os.makedirs(working_dir)
@@ -38,16 +38,12 @@ with open("/var/log/auth.log") as file:
 
                 if line_split[10] not in ip_list:
                     ip_stats[line_split[10]] = 0
-                    print(ip_stats)
                     print("Adding {} to list".format(line_split[10]))
                     ip_list.append(line_split[10])
                     with open(working_file, "wb")as pickled:
                         pickle.dump(ip_list, pickled)
                     print("Saved")
                 else:
-                    print(line_split)
-                    print(ip_stats)
-                    print(ip_list)
                     ip_stats[line_split[10]] += 1
                     if ip_stats[line_split[10]] <= 10:
                         print("Failed root from: {}".format(line_split[10]))
