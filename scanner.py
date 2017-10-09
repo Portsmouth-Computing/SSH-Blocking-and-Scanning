@@ -28,7 +28,7 @@ with open("/var/log/auth.log") as file:
             if was[10] not in ip_list:
                 print("Adding {} to list".format(was[10]))
                 ip_list.append(was[10])
-                with open("~/SSH-Blocking-and-Scanning/auth_scanning.pickle")as pickled:
+                with open("~/SSH-Blocking-and-Scanning/auth_scanning.pickle","wb")as pickled:
                     pickle.dump(ip_list, pickled)
                 print("Saved")
 
