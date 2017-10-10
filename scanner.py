@@ -15,6 +15,7 @@ username = os.getlogin()
 working_dir = "/home/{}/SSH-Blocking-and-Scanning/".format(username)
 working_file = "/home/{}/SSH-Blocking-and-Scanning/auth_scanning.pickle".format(username)
 ip_tracker_file = "/home/{}/SSH-Blocking-and-Scanning/ip_location.pickle".format(username)
+ip_raw_file = "/home/{}/SSH-Blocking-and-Scanning/ip_raw.txt".format(username)
 
 if not os.path.exists(working_dir):
     os.makedirs(working_dir)
@@ -123,7 +124,7 @@ for ip in ip_temp_list:
             input(">")
             break
 
-bad_origin = ["CN","KR","TR","VN","RU"]
+bad_origin = ["CN", "KR", "TR", "VN", "RU"]
 
 git = input("Do you want to push to git? ")
 if git.upper().startswith("Y"):
@@ -133,6 +134,13 @@ if git.upper().startswith("Y"):
             temp_bad_ip.append(IP)
 
     print(len(temp_bad_ip), "Bad IPs found.")
+
+    if not os.path.exists(ip_raw_file):
+        with open(ip_raw_file, "w") as raw_file:
+            raw_file.write("\n".join(temp_bad_ip))
+    else:
+        with open(ip_raw_file, "a") as raw_file:
+            raw_file.write("\n".join(temp_bad_ip))
 
 # ##############################To do, use git via subprocess and `git commit -a -m "Added a IP"` and then `git push`
 
