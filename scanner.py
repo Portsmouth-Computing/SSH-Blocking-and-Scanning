@@ -149,7 +149,7 @@ if git.upper().startswith("Y"):
         shutil.copy("/home/{}/SSH-Blocking-and-Scanning/ip_raw.txt".format(username), dst_copy_file.format(username))
         with open(dst_copy_file, "r") as dst_file:
             ip_list = dst_file.read()
-        with open("/home/{}/20fdd6a36582ad545e91485592c8ab4e/blocked_IPs".format(username), "a") as blocked:
+        with open("/home/{}/20fdd6a36582ad545e91485592c8ab4e/blocked_IPs".format(username), "w") as blocked:
             blocked.write(ip_list)
         os.chdir("/home/{}/20fdd6a36582ad545e91485592c8ab4e".format(username))
         subprocess.call("git commit -a -m 'Added a large amount of IPs from auth.logs'", shell=True)
