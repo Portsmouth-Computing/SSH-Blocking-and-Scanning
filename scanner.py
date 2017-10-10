@@ -1,4 +1,8 @@
-import os, time, pickle, requests
+import os, pickle, requests, platform
+
+if platform.system() != "Linux":
+    print("This code only works on Linux/Debian at the moment.")
+    exit()
 
 if os.geteuid() != 0:
     print("Please run as sudo.")
@@ -52,13 +56,10 @@ with open("/var/log/auth.log") as file:
             if line_split[8] == "root":
 
                 if line_split[10] not in ip_list or line_split[10] not in ip_temp_list:
-                    if line_split[10] not in ip_temp_list:
-                        print("Adding {} to list".format(line_split[10]))
-                    ip_stats[line_split[10]] = 1
                     if line_split[10] != "root" and line_split[10] not in ip_temp_list:
+                        print("Adding {} to list".format(line_split[10]))
                         ip_temp_list.append(line_split[10])
-                        # with open(working_file, "wb")as pickled:
-                        #     pickle.dump(ip_list, pickled)
+                        ip_stats[line_split[10]] = 1
                         print("Saved")
                     else:
                         try:
@@ -74,19 +75,28 @@ with open("/var/log/auth.log") as file:
                         ip_stats[line_split[10]] = 1
                     if ip_stats[line_split[10]] <= 10:
                         print("Failed root from: {}".format(line_split[10]))
-                        time.sleep(0.5)
 
-    #        time.sleep(1)
         elif "Unable to negotiate with" in line.strip():
             if line_split[9] not in ip_list and line_split[9] not in ip_temp_list:
                 print("Adding {} to list from key exchange".format(line_split[9]))
                 ip_temp_list.append(line_split[9])
+                try:
+                    ip_stats[line_split[9]] += 1
+                except KeyError as KE:
+                    print(KE, "Defaulting to 0")
+                    ip_stats[line_split[9]] = 1
+            else:
+                try:
+                    ip_stats[line_split[9]] += 1
+                except KeyError as KE:
+                    print(KE, "Defaulting to 0")
+                    ip_stats[line_split[9]] = 1
 
 print(len(ip_temp_list), "Results to go through")
 ip_country_stats_temp = {}
 
 for ip in ip_temp_list:
-    if ip not in ip_list:
+    if ip not in ip_list and ip not in ip_country_stats["Ip_Stats"]:
         r = requests.get("https://www.ipinfo.io/{}/country".format(ip))
         if r.status_code == 200:
             print("This IP came from {} ({})".format(r.text.strip(), ip))
@@ -112,6 +122,19 @@ for ip in ip_temp_list:
             print("Rate limited. Please wait for 24hrs.")
             input(">")
             break
+
+bad_origin = ["CN","KR","TR","VN","RU"]
+
+git = input("Do you want to push to git? ")
+if git.upper().startswith("Y"):
+    temp_bad_ip = []
+    for IP in ip_country_stats["IP_Stats"]:
+        if ip_country_stats["IP_Stats"][IP] in bad_origin and IP not in temp_bad_ip:
+            temp_bad_ip.append(IP)
+
+    print(len(temp_bad_ip), "Bad IPs found.")
+
+# ##############################To do, use git via subprocess and `git commit -a -m "Added a IP"` and then `git push`
 
 print("Amount of times the IP was found within the auth.log")
 print(ip_stats)
