@@ -10,6 +10,7 @@ username = os.getlogin()
 
 working_dir = "/home/{}/SSH-Blocking-and-Scanning/".format(username)
 working_file = "/home/{}/SSH-Blocking-and-Scanning/auth_scanning.pickle".format(username)
+ip_tracker_file = "/home/{}/SSH-Blocking-and-Scanning/ip_location.pickle".format(username)
 
 if not os.path.exists(working_dir):
     os.makedirs(working_dir)
@@ -18,14 +19,26 @@ try:
     if os.path.exists(working_file):
         with open(working_file, "rb") as pickled:
             ip_list = pickle.load(pickled)
-            print("Loaded Pickle")
+            print("Loaded Auth Pickle")
             print(ip_list)
     else:
         ip_list = []
-        print("Loaded blank file as pickle did not exist")
+        print("Loaded Blank IP List File as Pickle did not exist")
 except UnicodeDecodeError as UDE:
-    print(UDE, ". Loading blank IP list")
+    print(UDE, ". Loading Blank IP List")
     ip_list = []
+
+try:
+    if os.path.exists(ip_tracker_file):
+        with open(ip_tracker_file,"rb") as pickled:
+            ip_country_stats = pickle.load(pickled)
+            print("Loaded IP Tracker Pickle")
+    else:
+        ip_country_stats = {"Per_Country": {}, "IP_Stats": {}}
+        print("Loaded Blank Tracker List as Pickle did not exist.")
+except UnicodeDecodeError as UDE:
+    print(UDE, ". Loading Blank IP Tracker List")
+    ip_country_stats = {"Per_Country": {}, "IP_Stats": {}}
 
 ip_temp_list = []
 
@@ -68,28 +81,39 @@ with open("/var/log/auth.log") as file:
             if line_split[9] not in ip_list and line_split[9] not in ip_temp_list:
                 print("Adding {} to list from key exchange".format(line_split[9]))
                 ip_temp_list.append(line_split[9])
-        # Also work on a statement that checks lines like `Oct  8 17:27:33 up857256 sshd[15848]: Unable to negotiate with 27.76.249.209 port 56038: no matching key exchange method found. Their offer: diffie-hellman-group1-sha1 [preauth]`
 
 print(len(ip_temp_list), "Results to go through")
-ip_country_stats = {}
+ip_country_stats_temp = {}
 
 for ip in ip_temp_list:
-    r = requests.get("https://www.ipinfo.io/{}/country".format(ip))
-    if r.status_code == 200:
-        print("This IP came from {} ({})".format(r.text.strip(), ip))
+    if ip not in ip_list:
+        r = requests.get("https://www.ipinfo.io/{}/country".format(ip))
+        if r.status_code == 200:
+            print("This IP came from {} ({})".format(r.text.strip(), ip))
 
-        try:
-            ip_country_stats[r.text.strip()] += 1
-        except KeyError as KE:
-            ip_country_stats[r.text.strip()] = 1
+            try:
+                ip_country_stats_temp[r.text.strip()] += 1
+            except KeyError as KE:
+                ip_country_stats_temp[r.text.strip()] = 1
 
-        ip_list.append(ip)
-        with open(working_file, "wb") as pickled:
-            pickle.dump(ip_list, pickled)
-    elif r.status_code == 429:
-        print("Rate limited. Please wait for 24hrs.")
-        input(">")
-        exit()
+            try:
+                ip_country_stats["Per_Country"][r.text.strip()] += 1
+            except KeyError as KE:
+                ip_country_stats["Per_Country"][r.text.strip()] = 1
 
+            ip_country_stats["IP_Stats"][ip] = r.text.strip()
+
+            ip_list.append(ip)
+            with open(working_file, "wb") as pickled:
+                pickle.dump(ip_list, pickled)
+        elif r.status_code == 429:
+            print("Rate limited. Please wait for 24hrs.")
+            input(">")
+            break
+
+print("Amount of times the IP was found within the auth.log")
 print(ip_stats)
+print("Amount of countries found in this scan")
+print(ip_country_stats_temp)
+print("Total amount of country stats")
 print(ip_country_stats)
