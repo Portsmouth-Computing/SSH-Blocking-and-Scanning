@@ -142,20 +142,18 @@ if git.upper().startswith("Y"):
         with open(ip_raw_file, "a") as raw_file:
             raw_file.write("\n".join(temp_bad_ip))
 
-# ##############################To do, use git via subprocess and `git commit -a -m "Added a IP"` and then `git push`
-
-w = input("This code is designed for the author of this as it uses git and push. After this stage it is highly likely it will break for you. Do you want to continue? ").upper()
-if w == "Y":
-    import shutil
-    dst_copy_file = "/home/{}/20fdd6a36582ad545e91485592c8ab4e/ip_raw.txt".format(username)
-    shutil.copy("/home/{}/SSH-Blocking-and-Scanning/ip_raw.txt".format(username), dst_copy_file.format(username))
-    with open(dst_copy_file, "r") as dst_file:
-        ip_list = dst_file.read()
-    with open("/home/{}/20fdd6a36582ad545e91485592c8ab4e/blocked_IPs".format(username), "a") as blocked:
-        blocked.write(ip_list)
-    os.chdir("/home/{}/20fdd6a36582ad545e91485592c8ab4e".format(username))
-    subprocess.call("git commit -a -m 'Added a large amount of IPs from auth.logs'", shell=True)
-    subprocess.call("git push", shell=True)
+    w = input("This code is designed for the author of this as it uses git and push. After this stage it is highly likely it will break for you. Do you want to continue? ").upper()
+    if w == "Y":
+        import shutil
+        dst_copy_file = "/home/{}/20fdd6a36582ad545e91485592c8ab4e/ip_raw.txt".format(username)
+        shutil.copy("/home/{}/SSH-Blocking-and-Scanning/ip_raw.txt".format(username), dst_copy_file.format(username))
+        with open(dst_copy_file, "r") as dst_file:
+            ip_list = dst_file.read()
+        with open("/home/{}/20fdd6a36582ad545e91485592c8ab4e/blocked_IPs".format(username), "a") as blocked:
+            blocked.write(ip_list)
+        os.chdir("/home/{}/20fdd6a36582ad545e91485592c8ab4e".format(username))
+        subprocess.call("git commit -a -m 'Added a large amount of IPs from auth.logs'", shell=True)
+        subprocess.call("git push", shell=True)
 
 
 print("Amount of times the IP was found within the auth.log")
