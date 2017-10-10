@@ -96,7 +96,7 @@ print(len(ip_temp_list), "Results to go through")
 ip_country_stats_temp = {}
 
 for ip in ip_temp_list:
-    if ip not in ip_list and ip not in ip_country_stats["Ip_Stats"]:
+    if ip not in ip_list and ip not in ip_country_stats["IP_Stats"]:
         r = requests.get("https://www.ipinfo.io/{}/country".format(ip))
         if r.status_code == 200:
             print("This IP came from {} ({})".format(r.text.strip(), ip))
