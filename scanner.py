@@ -147,7 +147,7 @@ if git.upper().startswith("Y"):
 w = input("This code is designed for the author of this as it uses git and push. After this stage it is highly likely it will break for you. Do you want to continue? ").upper()
 if w == "Y":
     import shutil
-    dst_copy_file = "/home/{}/20fdd6a36582ad545e91485592c8ab4e/ip_raw.txt"
+    dst_copy_file = "/home/{}/20fdd6a36582ad545e91485592c8ab4e/ip_raw.txt".format(username)
     shutil.copy("/home/{}/SSH-Blocking-and-Scanning/ip_raw.txt".format(username), dst_copy_file.format(username))
     with open(dst_copy_file, "r") as dst_file:
         ip_list = dst_file.read()
