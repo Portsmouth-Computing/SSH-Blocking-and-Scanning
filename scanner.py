@@ -139,7 +139,7 @@ if gitCheck.upper().startswith("Y"):
         with open(ip_raw_file, "w") as raw_file:
             raw_file.write("\n".join(temp_bad_ip))
     else:
-        with open(ip_raw_file, "a") as raw_file:
+        with open(ip_raw_file, "w") as raw_file:
             raw_file.write("\n".join(temp_bad_ip))
 
     w = input("This code is designed for the author of this as it uses git and push. After this stage it is highly likely it will break for you. Do you want to continue? ").upper()
