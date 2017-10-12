@@ -10,7 +10,7 @@ if os.geteuid() != 0:
 else:
     print("Running as sudo.")
 
-staticInfo = ["\n","####### This section was created by a program to block irritating IP's","\n"]
+static_info = ["\n","####### This section was created by a program to block irritating IP's","\n"]
 
 username = os.getlogin()
 
@@ -33,7 +33,7 @@ tempList = []
 
 for line in hosts_file:
     tempList.append(line)
-for line in staticInfo:
+for line in static_info:
     tempList.append(line)
 for line in sshd_ip_list:
     tempList.append(line)
