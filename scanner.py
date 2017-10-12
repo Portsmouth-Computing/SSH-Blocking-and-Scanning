@@ -16,7 +16,7 @@ working_dir = "/home/{}/SSH-Blocking-and-Scanning/".format(username)
 working_file = "/home/{}/SSH-Blocking-and-Scanning/auth_scanning.pickle".format(username)
 ip_tracker_file = "/home/{}/SSH-Blocking-and-Scanning/ip_location.pickle".format(username)
 ip_raw_file = "/home/{}/SSH-Blocking-and-Scanning/ip_raw.txt".format(username)
-auth_log_users = ["root","test"]
+auth_log_users = ["root", "test", "admin"]
 
 if not os.path.exists(working_dir):
     os.makedirs(working_dir)
