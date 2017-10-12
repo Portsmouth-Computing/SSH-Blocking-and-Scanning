@@ -67,13 +67,11 @@ with open("/var/log/auth.log") as file:
                         try:
                             ip_stats[line_split[10]] += 1
                         except KeyError as KE:
-                            print(KE, "Defaulting to 0")
                             ip_stats[line_split[10]] = 1
                 else:
                     try:
                         ip_stats[line_split[10]] += 1
                     except KeyError as KE:
-                        print(KE,"Defaulting to 0")
                         ip_stats[line_split[10]] = 1
                     if ip_stats[line_split[10]] <= 1:
                         print("Failed root from: {}".format(line_split[10]))
@@ -85,13 +83,11 @@ with open("/var/log/auth.log") as file:
                 try:
                     ip_stats[line_split[9]] += 1
                 except KeyError as KE:
-                    print(KE, "Defaulting to 0")
                     ip_stats[line_split[9]] = 1
             else:
                 try:
                     ip_stats[line_split[9]] += 1
                 except KeyError as KE:
-                    print(KE, "Defaulting to 0")
                     ip_stats[line_split[9]] = 1
         elif "Did not receive identification string from" in line.strip():
             if line_split[11] not in ip_list and line_split[11] not in ip_temp_list:
