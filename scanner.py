@@ -16,6 +16,7 @@ working_dir = "/home/{}/SSH-Blocking-and-Scanning/".format(username)
 working_file = "/home/{}/SSH-Blocking-and-Scanning/auth_scanning.pickle".format(username)
 ip_tracker_file = "/home/{}/SSH-Blocking-and-Scanning/ip_location.pickle".format(username)
 ip_raw_file = "/home/{}/SSH-Blocking-and-Scanning/ip_raw.txt".format(username)
+auth_log_users = ["root","test"]
 
 if not os.path.exists(working_dir):
     os.makedirs(working_dir)
@@ -53,8 +54,8 @@ with open("/var/log/auth.log") as file:
     for line in file:
         # print(line.strip().split())
         line_split = line.strip().split()
-        if "Failed password for root from" in line.strip():
-            if line_split[8] == "root":
+        if "Failed password for" in line.strip():
+            if line_split[8] in auth_log_users:
 
                 if line_split[10] not in ip_list or line_split[10] not in ip_temp_list:
                     if line_split[10] != "root" and line_split[10] not in ip_temp_list:
