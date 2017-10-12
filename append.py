@@ -29,7 +29,7 @@ print("Backed up hosts.deny")
 sshd_ip_list = []
 with open("./ip_raw.txt") as rawIPs:
     for line in rawIPs:
-        sshd_ip_list.append("{}\n".format(line.strip()))
+        sshd_ip_list.append("sshd: {}\n".format(line.strip()))
 
 print("Read IP list")
 temp_list = []
