@@ -137,10 +137,10 @@ if gitCheck.upper().startswith("Y"):
 
     if not os.path.exists(ip_raw_file):
         with open(ip_raw_file, "w") as raw_file:
-            raw_file.write("\n".join(temp_bad_ip))
+            raw_file.write("\n".join(temp_bad_ip.sort()))
     else:
         with open(ip_raw_file, "w") as raw_file:
-            raw_file.write("\n".join(temp_bad_ip))
+            raw_file.write("\n".join(temp_bad_ip.sort()))
 
     w = input("This code is designed for the author of this as it uses git and push. After this stage it is highly likely it will break for you. Do you want to continue? ").upper()
     if w == "Y":
@@ -150,7 +150,7 @@ if gitCheck.upper().startswith("Y"):
         with open(dst_copy_file, "r") as dst_file:
             ip_list = dst_file.read()
         with open("/home/{}/20fdd6a36582ad545e91485592c8ab4e/blocked_IPs".format(username), "w") as blocked:
-            blocked.write(ip_list)
+            blocked.write(ip_list.sort())
         os.chdir("/home/{}/20fdd6a36582ad545e91485592c8ab4e".format(username))
         subprocess.call("git commit -a -m 'Added a large amount of IPs from auth.logs'", shell=True)
         subprocess.call("git push", shell=True)
