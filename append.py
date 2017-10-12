@@ -24,11 +24,14 @@ with open("/etc/hosts.deny") as hosts_filea:
         else:
             break
 
+print("Backed up hosts.deny")
+
 sshd_ip_list = []
 with open("./ip_raw.txt") as rawIPs:
     for line in rawIPs:
         sshd_ip_list.append("{}\n".format(line.strip()))
 
+print("Read IP list")
 temp_list = []
 
 for line in hosts_file:
@@ -38,6 +41,10 @@ for line in static_info:
 for line in sshd_ip_list:
     temp_list.append(line)
 
+print("Merged lists.")
+
 with open("/etc/hosts.deny", "w") as hosts_filea:
     for line in temp_list:
         hosts_filea.write(line)
+
+print("Written to hosts.deny")
