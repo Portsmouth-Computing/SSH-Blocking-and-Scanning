@@ -29,15 +29,15 @@ with open("./ip_raw.txt") as rawIPs:
     for line in rawIPs:
         sshd_ip_list.append("{}\n".format(line.strip()))
 
-tempList = []
+temp_list = []
 
 for line in hosts_file:
-    tempList.append(line)
+    temp_list.append(line)
 for line in static_info:
-    tempList.append(line)
+    temp_list.append(line)
 for line in sshd_ip_list:
-    tempList.append(line)
+    temp_list.append(line)
 
 with open("/etc/hosts.deny", "w") as hosts_filea:
-    for line in tempList:
+    for line in temp_list:
         hosts_filea.write(line)

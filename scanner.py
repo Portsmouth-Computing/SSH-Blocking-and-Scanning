@@ -140,8 +140,8 @@ for ip in ip_temp_list:
 
 bad_origin = ["CN", "KR", "TR", "VN", "RU"]
 
-gitCheck = input("Do you want to push to git? ")
-if gitCheck.upper().startswith("Y"):
+git_check = input("Do you want to push to git? ")
+if git_check.upper().startswith("Y"):
     temp_bad_ip = []
     for IP in ip_country_stats["IP_Stats"]:
         if ip_country_stats["IP_Stats"][IP] in bad_origin and IP not in temp_bad_ip:
