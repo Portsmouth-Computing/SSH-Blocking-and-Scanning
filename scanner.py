@@ -75,7 +75,7 @@ with open("/var/log/auth.log") as file:
                     except KeyError as KE:
                         print(KE,"Defaulting to 0")
                         ip_stats[line_split[10]] = 1
-                    if ip_stats[line_split[10]] <= 10:
+                    if ip_stats[line_split[10]] <= 1:
                         print("Failed root from: {}".format(line_split[10]))
 
         elif "Unable to negotiate with" in line.strip():
@@ -92,6 +92,19 @@ with open("/var/log/auth.log") as file:
                     ip_stats[line_split[9]] += 1
                 except KeyError as KE:
                     print(KE, "Defaulting to 0")
+                    ip_stats[line_split[9]] = 1
+        elif "Did not receive identification string from" in line.strip():
+            if line_split[11] not in ip_list and line_split[11] not in ip_temp_list:
+                print("Adding {} from no identification string given.".format(line_split[11]))
+                ip_temp_list.append(line_split[11])
+                try:
+                    ip_stats[line_split[9]] += 1
+                except KeyError as KE:
+                    ip_stats[line_split[9]] = 1
+            else:
+                try:
+                    ip_stats[line_split[9]] += 1
+                except KeyError as KE:
                     ip_stats[line_split[9]] = 1
 
 print(len(ip_temp_list), "Results to go through")
@@ -151,7 +164,7 @@ if gitCheck.upper().startswith("Y"):
         with open(dst_copy_file, "r") as dst_file:
             ip_list = dst_file.read()
         with open("/home/{}/20fdd6a36582ad545e91485592c8ab4e/blocked_IPs".format(username), "w") as blocked:
-            blocked.write(ip_list.sort())
+            blocked.write(ip_list)
         os.chdir("/home/{}/20fdd6a36582ad545e91485592c8ab4e".format(username))
         subprocess.call("git commit -a -m 'Added a large amount of IPs from auth.logs'", shell=True)
         subprocess.call("git push", shell=True)
