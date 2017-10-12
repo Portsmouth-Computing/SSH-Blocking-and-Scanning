@@ -148,13 +148,13 @@ if gitCheck.upper().startswith("Y"):
             temp_bad_ip.append(IP)
 
     print(len(temp_bad_ip), "Bad IPs found.")
-
+    temp_bad_ip.sort()
     if not os.path.exists(ip_raw_file):
         with open(ip_raw_file, "w") as raw_file:
-            raw_file.write("\n".join(temp_bad_ip.sort()))
+            raw_file.write("\n".join(temp_bad_ip))
     else:
         with open(ip_raw_file, "w") as raw_file:
-            raw_file.write("\n".join(temp_bad_ip.sort()))
+            raw_file.write("\n".join(temp_bad_ip))
 
     w = input("This code is designed for the author of this as it uses git and push. After this stage it is highly likely it will break for you. Do you want to continue? ").upper()
     if w == "Y":
