@@ -1,4 +1,4 @@
-import platform, os
+import platform, os, subprocess
 
 if platform.system() != "Linux":
     print("This code only works on Linux/Debian at the moment.")
@@ -10,7 +10,7 @@ if os.geteuid() != 0:
 else:
     print("Running as sudo.")
 
-static_info = ["\n","####### This section was created by a program to block irritating IP's","\n"]
+static_info = ["\n", "####### This section was created by a program to block irritating IP's", "\n"]
 
 username = os.getlogin()
 
@@ -48,3 +48,5 @@ with open("/etc/hosts.deny", "w") as hosts_filea:
         hosts_filea.write(line)
 
 print("Written to hosts.deny")
+subprocess.call("sudo service sshd restart", shell=True)
+print("Restarted service sshd.")
