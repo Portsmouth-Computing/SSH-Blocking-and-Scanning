@@ -134,7 +134,7 @@ for ip in ip_temp_list:
             input(">")
             break
 
-bad_origin = ["CN", "KR", "TR", "VN", "RU","BR","undefined","MX","ID","IT"]
+bad_origin = ["CN", "KR", "TR", "VN", "RU","BR","undefined","MX","ID","IT","HK"]
 
 git_check = input("Do you want to push to git? ")
 if git_check.upper().startswith("Y"):
