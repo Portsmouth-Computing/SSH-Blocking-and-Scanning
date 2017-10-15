@@ -100,7 +100,7 @@ with open("/etc/hosts.deny") as hosts_filea:
             break
 
 sshd_ip_list = []
-with open("./ip_raw.txt") as rawIPs:
+with open(ip_raw_file) as rawIPs:
     for line in rawIPs:
         sshd_ip_list.append("sshd: {}\n".format(line.strip()))
 
