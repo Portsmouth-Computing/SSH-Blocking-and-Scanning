@@ -9,6 +9,7 @@ working_dir = "/root/SSH-Blocking-and-Scanning/".format(username)
 working_file = "/root/SSH-Blocking-and-Scanning/auth_scanning.pickle".format(username)
 ip_tracker_file = "/root/SSH-Blocking-and-Scanning/ip_location.pickle".format(username)
 ip_raw_file = "/root/SSH-Blocking-and-Scanning/ip_raw.txt".format(username)
+bad_origin = ["CN", "KR", "TR", "VN", "RU", "BR", "undefined", "MX", "ID", "IT", "HK"]
 
 if not os.path.exists(working_dir):
     os.makedirs(working_dir)
@@ -38,15 +39,18 @@ with open("/var/log/auth.log") as file:
         line_split = line.strip().split()
         if "Failed password for" in line.strip():
             if not line_split[8].lower().startswith("up"):
-                if line_split[10] not in ip_list or line_split[10] not in ip_temp_list:
-                    if line_split[10] != "root" and line_split[10] not in ip_temp_list:
-                        ip_temp_list.append(line_split[10])
+                failed_ip = line_split[10]
+                if failed_ip not in ip_list or failed_ip not in ip_temp_list:
+                    if failed_ip != "root" and failed_ip not in ip_temp_list:
+                        ip_temp_list.append(failed_ip)
         elif "Unable to negotiate with" in line.strip():
-            if line_split[9] not in ip_list and line_split[9] not in ip_temp_list:
-                ip_temp_list.append(line_split[9])
+            negotiate_ip = line_split[9]
+            if negotiate_ip not in ip_list and negotiate_ip not in ip_temp_list:
+                ip_temp_list.append(negotiate_ip)
         elif "Did not receive identification string from" in line.strip():
-            if line_split[11] not in ip_list and line_split[11] not in ip_temp_list:
-                ip_temp_list.append(line_split[11])
+            identification_ip = line_split[11]
+            if identification_ip not in ip_list and identification_ip not in ip_temp_list:
+                ip_temp_list.append(identification_ip)
 
 for ip in ip_temp_list:
     if ip not in ip_list and ip not in ip_country_stats["IP_Stats"]:
@@ -68,22 +72,18 @@ for ip in ip_temp_list:
         elif r.status_code == 429:
             break
 
-bad_origin = ["CN", "KR", "TR", "VN", "RU", "BR", "undefined", "MX", "ID", "IT", "HK"]
+temp_bad_ip = []
+for IP in ip_country_stats["IP_Stats"]:
+    if ip_country_stats["IP_Stats"][IP] in bad_origin and IP not in temp_bad_ip:
+        temp_bad_ip.append(IP)
 
-git_check = input("Do you want to push to git? ")
-if git_check.upper().startswith("Y"):
-    temp_bad_ip = []
-    for IP in ip_country_stats["IP_Stats"]:
-        if ip_country_stats["IP_Stats"][IP] in bad_origin and IP not in temp_bad_ip:
-            temp_bad_ip.append(IP)
-
-    temp_bad_ip.sort()
-    if not os.path.exists(ip_raw_file):
-        with open(ip_raw_file, "w") as raw_file:
-            raw_file.write("\n".join(temp_bad_ip))
-    else:
-        with open(ip_raw_file, "w") as raw_file:
-            raw_file.write("\n".join(temp_bad_ip))
+temp_bad_ip.sort()
+if not os.path.exists(ip_raw_file):
+    with open(ip_raw_file, "w") as raw_file:
+        raw_file.write("\n".join(temp_bad_ip))
+else:
+    with open(ip_raw_file, "w") as raw_file:
+        raw_file.write("\n".join(temp_bad_ip))
 
 # ##### Appending
 
