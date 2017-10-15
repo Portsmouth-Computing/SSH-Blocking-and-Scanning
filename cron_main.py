@@ -63,7 +63,7 @@ for ip in ip_temp_list:
             ip_list.append(ip)
             with open(working_file, "wb") as pickled:
                 pickle.dump(ip_list, pickled)
-            with open(ip_tracker_file ,"wb") as pickled:
+            with open(ip_tracker_file, "wb") as pickled:
                 pickle.dump(ip_country_stats, pickled)
         elif r.status_code == 429:
             break
