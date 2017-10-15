@@ -1,15 +1,14 @@
-import os, pickle, requests, platform, subprocess
+import os, pickle, requests, subprocess
 
 if os.geteuid() != 0:
     exit()
 
 username = os.getlogin()
 
-working_dir = "/home/{}/SSH-Blocking-and-Scanning/".format(username)
-working_file = "/home/{}/SSH-Blocking-and-Scanning/auth_scanning.pickle".format(username)
-ip_tracker_file = "/home/{}/SSH-Blocking-and-Scanning/ip_location.pickle".format(username)
-ip_raw_file = "/home/{}/SSH-Blocking-and-Scanning/ip_raw.txt".format(username)
-auth_log_users = ["root", "test", "admin","pi"]
+working_dir = "/root/SSH-Blocking-and-Scanning/".format(username)
+working_file = "/root/SSH-Blocking-and-Scanning/auth_scanning.pickle".format(username)
+ip_tracker_file = "/root/SSH-Blocking-and-Scanning/ip_location.pickle".format(username)
+ip_raw_file = "/root/SSH-Blocking-and-Scanning/ip_raw.txt".format(username)
 
 if not os.path.exists(working_dir):
     os.makedirs(working_dir)
@@ -25,7 +24,7 @@ except UnicodeDecodeError as UDE:
 
 try:
     if os.path.exists(ip_tracker_file):
-        with open(ip_tracker_file,"rb") as pickled:
+        with open(ip_tracker_file, "rb") as pickled:
             ip_country_stats = pickle.load(pickled)
     else:
         ip_country_stats = {"Per_Country": {}, "IP_Stats": {}}
@@ -36,11 +35,9 @@ ip_temp_list = []
 
 with open("/var/log/auth.log") as file:
     for line in file:
-        # print(line.strip().split())
         line_split = line.strip().split()
         if "Failed password for" in line.strip():
-            if line_split[8] in auth_log_users:
-
+            if not line_split[8].lower().startswith("up"):
                 if line_split[10] not in ip_list or line_split[10] not in ip_temp_list:
                     if line_split[10] != "root" and line_split[10] not in ip_temp_list:
                         ip_temp_list.append(line_split[10])
@@ -51,17 +48,10 @@ with open("/var/log/auth.log") as file:
             if line_split[11] not in ip_list and line_split[11] not in ip_temp_list:
                 ip_temp_list.append(line_split[11])
 
-ip_country_stats_temp = {}
-
 for ip in ip_temp_list:
     if ip not in ip_list and ip not in ip_country_stats["IP_Stats"]:
         r = requests.get("https://www.ipinfo.io/{}/country".format(ip))
         if r.status_code == 200:
-
-            try:
-                ip_country_stats_temp[r.text.strip()] += 1
-            except KeyError as KE:
-                ip_country_stats_temp[r.text.strip()] = 1
 
             try:
                 ip_country_stats["Per_Country"][r.text.strip()] += 1
@@ -95,10 +85,9 @@ if git_check.upper().startswith("Y"):
         with open(ip_raw_file, "w") as raw_file:
             raw_file.write("\n".join(temp_bad_ip))
 
+# ##### Appending
 
 static_info = ["\n", "####### This section was created by a program to block irritating IP's", "\n"]
-
-username = os.getlogin()
 
 hosts_file = []
 hosts_counter = 0
