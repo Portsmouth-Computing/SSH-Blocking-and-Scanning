@@ -41,12 +41,16 @@ with open("/var/log/auth.log") as file:
             break
         elif " sshd[" not in line:
             break
+        if "Failed password for invalid user" in line.strip():
+            if not line_split[10].lower().startswith("up"):
+                failed_user_ip = line_split[12]
+                if failed_user_ip not in ip_list or failed_user_ip not in ip_temp_list:
+                    ip_temp_list.append(failed_user_ip)
         if "Failed password for" in line.strip():
             if not line_split[8].lower().startswith("up"):
                 failed_ip = line_split[10]
                 if failed_ip not in ip_list or failed_ip not in ip_temp_list:
-                    if failed_ip != "root" and failed_ip not in ip_temp_list:
-                        ip_temp_list.append(failed_ip)
+                    ip_temp_list.append(failed_ip)
         elif "Unable to negotiate with" in line.strip():
             negotiate_ip = line_split[9]
             if negotiate_ip not in ip_list and negotiate_ip not in ip_temp_list:
