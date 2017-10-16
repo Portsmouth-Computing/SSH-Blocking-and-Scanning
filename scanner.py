@@ -54,6 +54,18 @@ with open("/var/log/auth.log") as file:
     for line in file:
         # print(line.strip().split())
         line_split = line.strip().split()
+        if "Failed password for invalid user" in line.strip():
+            if not line_split[10].lower().startswith("up"):
+                failed_user_ip = line_split[12]
+                if failed_user_ip not in ip_list or failed_user_ip not in ip_temp_list:
+                    ip_temp_list.append(failed_user_ip)
+                    ip_stats[line_split[10]] = 1
+                else:
+                    try:
+                        ip_stats[line_split[10]] += 1
+                    except KeyError as KE:
+                        ip_stats[line_split[10]] = 1
+
         if "Failed password for" in line.strip():
             if line_split[8] in auth_log_users:
 
@@ -62,7 +74,6 @@ with open("/var/log/auth.log") as file:
                         print("Adding {} to list".format(line_split[10]))
                         ip_temp_list.append(line_split[10])
                         ip_stats[line_split[10]] = 1
-                        print("Saved")
                     else:
                         try:
                             ip_stats[line_split[10]] += 1
