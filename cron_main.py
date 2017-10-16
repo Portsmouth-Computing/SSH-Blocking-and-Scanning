@@ -38,9 +38,9 @@ with open("/var/log/auth.log") as file:
     for line in file:
         line_split = line.strip().split()
         if "Accepted publickey for kopeckyj from" in line:
-            break
+            continue
         elif " sshd[" not in line:
-            break
+            continue
         if "Failed password for invalid user" in line.strip():
             if not line_split[10].lower().startswith("up"):
                 failed_user_ip = line_split[12]
