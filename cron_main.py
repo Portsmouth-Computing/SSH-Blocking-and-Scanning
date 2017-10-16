@@ -37,6 +37,10 @@ ip_temp_list = []
 with open("/var/log/auth.log") as file:
     for line in file:
         line_split = line.strip().split()
+        if "Accepted publickey for kopeckyj from" in line:
+            break
+        elif " sshd[" not in line:
+            break
         if "Failed password for" in line.strip():
             if not line_split[8].lower().startswith("up"):
                 failed_ip = line_split[10]
@@ -56,11 +60,6 @@ for ip in ip_temp_list:
     if ip not in ip_list and ip not in ip_country_stats["IP_Stats"]:
         r = requests.get("https://www.ipinfo.io/{}/country".format(ip))
         if r.status_code == 200:
-
-            try:
-                ip_country_stats["Per_Country"][r.text.strip()] += 1
-            except KeyError as KE:
-                ip_country_stats["Per_Country"][r.text.strip()] = 1
 
             ip_country_stats["IP_Stats"][ip] = r.text.strip()
 
