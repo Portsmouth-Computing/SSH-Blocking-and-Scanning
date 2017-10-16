@@ -58,6 +58,7 @@ with open("/var/log/auth.log") as file:
             if not line_split[10].lower().startswith("up"):
                 failed_user_ip = line_split[12]
                 if failed_user_ip not in ip_list or failed_user_ip not in ip_temp_list:
+                    print("Adding {} to list due to failed user")
                     ip_temp_list.append(failed_user_ip)
                     ip_stats[line_split[10]] = 1
                 else:
