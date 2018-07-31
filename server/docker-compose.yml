@@ -6,6 +6,7 @@ services:
       - "880:80"
     volumes:
       - .:/ssh_blocker
-  redis:
-    image: "redis:alpine"
-
+  postgres:
+    image: "postgres:10-alpine"
+    volumes:
+      - ./schema.sql:/docker-entrypoint-initdb.d/schema.sql
