@@ -5,7 +5,8 @@ import aiohttp
 async def single_data_retrieval(ip):
     async with aiohttp.ClientSession() as session:
         async with session.get(f"http://www.ipinfo.io/{ip}/country") as resp:
-            country = await resp.text().strip()
+            country = await resp.text()
+            country = country.strip()
     print(f"Fetched country ({country}) for {ip}")
     return country
 
