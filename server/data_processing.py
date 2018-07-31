@@ -3,7 +3,7 @@ import database_programs
 
 async def single_ip_processing(ip, conn):
     ip_info = await database_programs.fetch_from_database(conn, ip)
-    if ip_info is not []:
+    if ip_info is not None:
         print(ip_info)
         print(type(ip_info))
         await database_programs.update_entry(conn, ip, ip_info["amount_checked"])
