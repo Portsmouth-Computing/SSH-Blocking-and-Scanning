@@ -18,7 +18,9 @@ async def setup_db_connection(app, loop):
 @app.route("/ip/info", methods=["POST"])
 async def ip_info(request):
     async with request.app.pool.acquire() as conn:
-        await data_processing.single_ip_processing(request.json["ip"], conn)
+        ip_info = await data_processing.single_ip_processing(request.json["ip"], conn)
+    return sanic.response.json(ip_info)
+
 
 
 @app.route("/ip/submit", methods=["POST"])
