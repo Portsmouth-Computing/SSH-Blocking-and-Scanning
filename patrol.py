@@ -1,7 +1,9 @@
 import os
 
+
 def main():
     if os.geteuid() != 0:
+        print("Not root. Need root perms to access auth.log")
         exit()
 
     username = os.getlogin()
@@ -43,7 +45,7 @@ def main():
 
     return ip_temp_list
 
-    
+
 if __name__ == "__main__":
     ip_temp_list = main()
     print(len(ip_temp_list))
