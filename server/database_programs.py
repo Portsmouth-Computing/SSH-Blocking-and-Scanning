@@ -16,5 +16,5 @@ async def fetch_formattor(messages):
 
 async def insert_into_database(conn, message):
     await conn.execute("""
-    INSERT INTO messages(message) VALUES($1)""",
+    INSERT INTO ip_storage(ip, country, last_updated_time, amount_checked) VALUES($1)""",
                        message)

@@ -15,6 +15,12 @@ async def setup_db_connection(app, loop):
     print("Connected to database")
 
 
+@app.route("/ip/info", methods=["POST"])
+async def ip_info(request):
+    async with request.app.pool.acquire() as conn:
+        await data_processing.single_ip_processing(request.json["ip"], conn)
+
+
 @app.route("/ip/submit", methods=["POST"])
 async def ip_submit_handler(request):
     print("Len: ", len(request.json))
