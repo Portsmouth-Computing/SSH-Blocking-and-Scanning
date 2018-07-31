@@ -2,6 +2,7 @@ from sanic import Sanic
 import sanic.response
 import asyncpg
 import requests
+import data_processing
 print("Imported")
 
 app = Sanic("ssh-server")
@@ -10,8 +11,16 @@ print("Setup App")
 
 @app.listener("before_server_start")
 async def setup_db_connection(app, loop):
-    app.pool = await asyncpg.create_pool(host="postgres", user="postgres")
+    app.pool = await asyncpg.create_pool(host="ssh-postgres", user="postgres")
     print("Connected to database")
+
+
+@app.route("/ip/submit", methods=["POST"])
+async def ip_submit_handler(request):
+    print("Len: ", len(request.json))
+
+    async with request.app.pool.acquire() as conn:
+        bad_ip_list = await data_processing.processing_list(request.json, conn)
 
 
 if __name__ == "__main__":
