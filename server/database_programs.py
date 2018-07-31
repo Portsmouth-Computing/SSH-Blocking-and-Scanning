@@ -17,7 +17,7 @@ async def fetch_formattor(ip_dict):
 
 async def update_entry(conn, ip, current_total):
     await conn.execute("""
-    UPDATE messages
+    UPDATE ip_storage
         SET amount_checked = amount_checked + 1
     WHERE ip = $1
         AND amount_checked = $2
