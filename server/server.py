@@ -3,6 +3,7 @@ import sanic.response
 import asyncpg
 import requests
 import data_processing
+import aiohttp
 print("Imported")
 
 app = Sanic("ssh-server")
@@ -13,12 +14,14 @@ print("Setup App")
 async def before_server_starts_handler(app, loop):
     app.pool = await asyncpg.create_pool(host="ssh-postgres", user="postgres")
     print("Connected to database")
+    app.session = aiohttp.ClientSession()
+    print("Created session")
 
 
 @app.route("/ip/info", methods=["POST"])
 async def ip_info(request):
     async with request.app.pool.acquire() as conn:
-        ip_info = await data_processing.single_ip_processing(request.json["ip"], conn)
+        ip_info = await data_processing.single_ip_processing(request.json["ip"], conn, app.session)
     return sanic.response.json(ip_info)
 
 
