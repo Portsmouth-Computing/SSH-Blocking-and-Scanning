@@ -1,12 +1,12 @@
 version: '3'
 services:
-  web:
+  ssh-web:
     build: .
     ports:
       - "880:80"
     volumes:
       - .:/ssh_blocker
-  postgres:
+  ssh-postgres:
     image: "postgres:10-alpine"
     volumes:
       - ./schema.sql:/docker-entrypoint-initdb.d/schema.sql
