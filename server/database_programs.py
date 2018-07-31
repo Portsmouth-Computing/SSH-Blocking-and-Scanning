@@ -1,6 +1,6 @@
-async def fetch_from_database(conn):
+async def fetch_from_database(conn, ip):
     messages = await conn.fetch(
-        "SELECT * FROM messages ORDER BY id DESC LIMIT 50"
+        "SELECT * FROM ip_storage WHERE ip = $1", ip
     )
 
     return messages
