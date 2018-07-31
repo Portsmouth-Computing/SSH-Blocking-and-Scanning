@@ -1,3 +1,5 @@
+from time import time
+
 async def fetch_from_database(conn, ip):
     messages = await conn.fetchrow(
         "SELECT * FROM ip_storage WHERE ip = $1", ip
@@ -24,7 +26,7 @@ async def update_entry(conn, ip, current_total):
     """, ip, current_total)
 
 
-async def insert_into_database(conn, message):
+async def insert_into_database(conn, ip, country):
     await conn.execute("""
     INSERT INTO ip_storage(ip, country, last_updated_time, amount_checked) VALUES($1)""",
-                       message)
+                       ip, country, time(), 1)
