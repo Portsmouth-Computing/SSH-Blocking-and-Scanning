@@ -19,4 +19,4 @@ RUN pip install -r requirements.txt
 ENV NAME World
 
 # Run app.py when the container launches
-CMD ["python", "sanic_server.py"]
+CMD ["python", "server.py"]

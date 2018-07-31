@@ -3,9 +3,9 @@ services:
   web:
     build: .
     ports:
-      - "808:80"
+      - "880:80"
     volumes:
-      - .:/py_chator
+      - .:/ssh_blocker
   redis:
     image: "redis:alpine"
 
