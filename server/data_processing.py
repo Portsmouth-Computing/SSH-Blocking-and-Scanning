@@ -1,15 +1,25 @@
 import database_programs
+import aiohttp
+
+
+async def single_data_retrieval(ip):
+    async with aiohttp.ClientSession() as session:
+        async with session.get(f"http://www.ipinfo.io/{ip}/country") as resp:
+            country = await resp.text()
+    print(f"Fetched country ({country}) for {ip}")
+    return country
 
 
 async def single_ip_processing(ip, conn):
     ip_info = await database_programs.fetch_from_database(conn, ip)
     if ip_info is not None:
-        print(ip_info)
-        print(type(ip_info))
         await database_programs.update_entry(conn, ip, ip_info["amount_checked"])
         return await database_programs.fetch_formattor(ip_info)
     else:
-        return {}
+        country = await single_data_retrieval(ip)
+        await database_programs.insert_into_database(conn, ip, country)
+        ip_info = await database_programs.fetch_from_database(conn, ip)
+        return await database_programs.fetch_formattor(ip_info)
 
 
 async def processing_list(ip_list, conn):
