@@ -10,7 +10,7 @@ print("Setup App")
 
 
 @app.listener("before_server_start")
-async def setup_db_connection(app, loop):
+async def before_server_starts_handler(app, loop):
     app.pool = await asyncpg.create_pool(host="ssh-postgres", user="postgres")
     print("Connected to database")
 
@@ -20,7 +20,6 @@ async def ip_info(request):
     async with request.app.pool.acquire() as conn:
         ip_info = await data_processing.single_ip_processing(request.json["ip"], conn)
     return sanic.response.json(ip_info)
-
 
 
 @app.route("/ip/submit", methods=["POST"])
