@@ -1,6 +1,7 @@
 CREATE TABLE IF NOT EXISTS ip_storage (
-    ip varchar(15) PRIMARY KEY,
-    country varchar(2),
-    last_updated_time int,
-    amount_checked bigint
+    ip CIDR PRIMARY KEY,
+    country_code TEXT CHECK (char_length(country_code) = 2),
+
+    accessed BIGINT DEFAULT 1
+    last_updated TIMESTAMP DEFAULT now(),
 );
