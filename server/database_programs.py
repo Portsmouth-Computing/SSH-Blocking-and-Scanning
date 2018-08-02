@@ -29,5 +29,5 @@ async def update_entry(conn, ip, current_total):
 
 async def insert_into_database(conn, ip, country):
     await conn.execute("""
-    INSERT INTO ip_storage(ip, country_code, last_updated, accessed) VALUES($1, $2, $3, $4)""",
-                       ip, country, time(), 1)
+    INSERT INTO ip_storage(ip, country_code) VALUES($1, $2)""",
+                       ip, country)
