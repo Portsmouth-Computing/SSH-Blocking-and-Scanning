@@ -12,7 +12,7 @@ async def single_data_retrieval(ip, app_session):
 async def single_ip_processing(ip, conn, app_session):
     ip_info = await database_programs.fetch_from_database(conn, ip)
     if ip_info is not None:
-        await database_programs.update_entry(conn, ip, ip_info["amount_checked"])
+        await database_programs.update_entry(conn, ip, ip_info["accessed"])
         return await database_programs.fetch_formattor(ip_info)
     else:
         country = await single_data_retrieval(ip, app_session)
