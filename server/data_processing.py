@@ -23,10 +23,19 @@ async def single_ip_processing(ip, conn, app_session):
         # return dict(ip_info)
 
 
-async def processing_list(ip_list, conn):
+async def processing_list(ip_list, conn, app_session):
+    processed_ip_list = []
     for ip in ip_list:
         ip_info = await database_programs.fetch_from_database(conn, ip)
-        print(ip_info)
+        if ip_info is not None:
+            await database_programs.update_entry(conn, ip, ip_info["accessed"])
+            processed_ip_list.append(await database_programs.fetch_formattor(ip_info))
+        else:
+            country = await single_data_retrieval(ip, app_session)
+            await database_programs.insert_into_database(conn, ip, country)
+            ip_info = await database_programs.fetch_from_database(conn, ip)
+            processed_ip_list.append(await single_data_retrieval(ip_info))
+
 """
     for ip in ip_list:
         if ip not in ip_list and ip not in ip_country_stats["IP_Stats"]:

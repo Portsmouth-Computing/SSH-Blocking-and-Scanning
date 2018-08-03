@@ -4,6 +4,7 @@ import asyncpg
 import requests
 import data_processing
 import aiohttp
+from time import time
 print("Imported")
 
 app = Sanic("ssh-server")
@@ -18,19 +19,22 @@ async def before_server_starts_handler(app, loop):
     print("Created session")
 
 
-@app.route("/ip/info", methods=["POST"])
+@app.route("/ip/single", methods=["POST"])
 async def ip_info(request):
     async with request.app.pool.acquire() as conn:
         ip_info = await data_processing.single_ip_processing(request.json["ip"], conn, app.session)
     return sanic.response.json(ip_info)
 
 
-@app.route("/ip/submit", methods=["POST"])
+@app.route("/ip/list", methods=["POST"])
 async def ip_submit_handler(request):
-    print("Len: ", len(request.json))
+    print(f"From {request.ip} Len: {len(request.json['ip_list'])}")
 
+    start_time = time()
     async with request.app.pool.acquire() as conn:
-        bad_ip_list = await data_processing.processing_list(request.json, conn)
+        ip_list = await data_processing.processing_list(request.json, conn, app.session)
+
+    return sanic.response.json({"ip_list": ip_list, "time_taken": time()-start_time})
 
 
 if __name__ == "__main__":
