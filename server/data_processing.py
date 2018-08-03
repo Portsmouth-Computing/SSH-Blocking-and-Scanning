@@ -12,6 +12,7 @@ async def single_data_retrieval(ip, app_session):
 async def single_ip_processing(ip, conn, app_session):
     ip_info = await database_programs.fetch_from_database(conn, ip)
 
+    print(ip, conn, ip_info)
     if ip_info is not None:
         await database_programs.update_entry(conn, ip, ip_info["accessed"])
         return await database_programs.fetch_formattor(ip_info)
@@ -27,6 +28,11 @@ async def processing_list(ip_list, conn, app_session):
     processed_ip_list = []
 
     for ip in ip_list:
+        processed_ip_list.append(await single_ip_processing(ip, conn, app_session))
+
+    return processed_ip_list
+
+"""
         ip_info = await database_programs.fetch_from_database(conn, ip)
 
         if ip_info is not None:
@@ -40,6 +46,7 @@ async def processing_list(ip_list, conn, app_session):
             processed_ip_list.append(await database_programs.fetch_formattor(ip_info))
 
     return processed_ip_list
+    """
 
 """
     for ip in ip_list:
