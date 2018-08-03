@@ -22,7 +22,6 @@ async def before_server_starts_handler(app, loop):
 async def ip_info(request):
     async with request.app.pool.acquire() as conn:
         ip_info = await data_processing.single_ip_processing(request.json["ip"], conn, app.session)
-    print(ip_info)
     return sanic.response.json(ip_info)
 
 
