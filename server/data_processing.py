@@ -7,7 +7,8 @@ async def single_data_retrieval(ip, app_session):
         country = await resp.text()
         country = country.strip()
         status = resp.status
-    print(f"Fetched country ({country}) for {ip}")
+    if status == 200:
+        print(f"Fetched country ({country}) for {ip}")
     return country, status
 
 
