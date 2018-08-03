@@ -22,9 +22,9 @@ async def fetch_formattor(ip_dict):
 
 async def ip_formattor(ip_address: Union[ipaddress.IPv4Address, ipaddress.IPv6Address]):
     if ip_address.version == 4:
-        return ipv4_formattor(ip_address)
+        return await ipv4_formattor(ip_address)
     else:
-        return ipv6_formattor(ip_address)
+        return await ipv6_formattor(ip_address)
 
 
 async def ipv4_formattor(ip_address: ipaddress.IPv4Address):
