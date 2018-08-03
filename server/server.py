@@ -34,7 +34,12 @@ async def ip_submit_handler(request):
     async with request.app.pool.acquire() as conn:
         ip_list = await data_processing.processing_list(request.json["ip_list"], conn, app.session)
 
-    return sanic.response.json({"ip_list": ip_list, "time_taken": time()-start_time})
+    errored_list_count = 0
+    for ip in ip_list:
+        if ip["country"] == "??":
+            errored_list_count += 1
+
+    return sanic.response.json({"ip_list": ip_list, "time_taken": time()-start_time, "total_failed_amount": errored_list_count})
 
 
 if __name__ == "__main__":

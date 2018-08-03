@@ -1,12 +1,14 @@
 import database_programs
+from time import time
 
 
 async def single_data_retrieval(ip, app_session):
     async with app_session.get(f"http://www.ipinfo.io/{ip}/country") as resp:
         country = await resp.text()
         country = country.strip()
+        status = resp.status
     print(f"Fetched country ({country}) for {ip}")
-    return country
+    return country, status
 
 
 async def single_ip_processing(ip, conn, app_session):
@@ -18,10 +20,13 @@ async def single_ip_processing(ip, conn, app_session):
         return await database_programs.fetch_formattor(ip_info)
 
     else:
-        country = await single_data_retrieval(ip, app_session)
-        await database_programs.insert_into_database(conn, ip, country)
-        ip_info = await database_programs.fetch_from_database(conn, ip)
-        return await database_programs.fetch_formattor(ip_info)
+        country, status = await single_data_retrieval(ip, app_session)
+        if status == 200:
+            await database_programs.insert_into_database(conn, ip, country)
+            ip_info = await database_programs.fetch_from_database(conn, ip)
+            return await database_programs.fetch_formattor(ip_info)
+        else:
+            return {"ip": ip, "country": "??", "last_updated": time(), "amount_checked": 1}
 
 
 async def processing_list(ip_list, conn, app_session):
