@@ -23,7 +23,10 @@ async def before_server_starts_handler(app, loop):
 async def ip_info(request):
     async with request.app.pool.acquire() as conn:
         ip_info = await data_processing.single_ip_processing(request.json["ip"], conn, app.session)
-    return sanic.response.json(ip_info)
+    if ip_info["country"] == "??":
+        return sanic.response.json(ip_info, status=429)
+    else:
+        return sanic.response.json(ip_info)
 
 
 @app.route("/ip/list", methods=["POST"])
