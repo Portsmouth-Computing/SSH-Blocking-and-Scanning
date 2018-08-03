@@ -32,7 +32,7 @@ async def ip_submit_handler(request):
 
     start_time = time()
     async with request.app.pool.acquire() as conn:
-        ip_list = await data_processing.processing_list(request.json, conn, app.session)
+        ip_list = await data_processing.processing_list(request.json["ip_list"], conn, app.session)
 
     return sanic.response.json({"ip_list": ip_list, "time_taken": time()-start_time})
 
