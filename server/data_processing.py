@@ -34,7 +34,7 @@ async def processing_list(ip_list, conn, app_session):
             country = await single_data_retrieval(ip, app_session)
             await database_programs.insert_into_database(conn, ip, country)
             ip_info = await database_programs.fetch_from_database(conn, ip)
-            processed_ip_list.append(await single_data_retrieval(ip_info))
+            processed_ip_list.append(await database_programs.fetch_formattor(ip_info))
 
 """
     for ip in ip_list:
