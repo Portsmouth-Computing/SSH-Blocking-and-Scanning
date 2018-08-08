@@ -37,6 +37,19 @@ async def single_ip_processing(ip, conn, app_session, limit_hit=False):
             return {"ip": ip, "country": "??", "last_updated": time(), "amount_checked": 1}
 
 
+async def raw_country_code_stats_formattor(data_list):
+    temp_dict = {}
+    for item in data_list:
+        temp_dict[item.country_code] = item.count
+    return temp_dict
+
+
+async def ip_statistics(conn):
+    raw_country_code_data = await database_programs.country_count_stats(conn)
+    formatted_country_codes = await raw_country_code_stats_formattor(raw_country_code_data)
+    return formatted_country_codes
+
+
 async def processing_list(ip_list, conn, app_session):
     processed_ip_list = []
     limit_hit = False

@@ -78,3 +78,8 @@ async def insert_into_database(conn, ip, country):
     await conn.execute("""
     INSERT INTO ip_storage(ip, country_code) VALUES($1, $2)""",
                        ip, country)
+
+
+async def country_count_stats(conn):
+    return await conn.fetch("""
+    SELECT COUNT(country_code), country_code FROM ip_storage GROUP BY country_code ORDER BY 1 DESC""")

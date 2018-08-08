@@ -51,6 +51,12 @@ async def ip_submit_handler(request):
         return sanic.response.json({"ip_list": ip_list, "time_taken": time()-start_time, "total_failed_amount": errored_list_count})
 
 
+@app.route("/ip/stats", methods=["GET"])
+async def ip_stats_handler(request):
+    async with request.app.pool.acquire() as conn:
+        return sanic.response.json(await data_processing.ip_statistics(conn))
+
+
 if __name__ == "__main__":
     ip = requests.get("http://api.ipify.org")
     print(f"Running on {ip.text}")
