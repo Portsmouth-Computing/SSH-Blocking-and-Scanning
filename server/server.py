@@ -33,7 +33,7 @@ async def ip_info(request):
 async def ip_submit_handler(request):
 
     try:
-        ip_list = request.json("ip_list")
+        ip_list = request.json["ip_list"]
     except KeyError:
         return sanic.response.json({"Error", "KeyError. Please send your JSON POST request with the JSON key being 'ip_list'"}, status=400)
     else:
