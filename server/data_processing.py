@@ -1,5 +1,6 @@
 import database_programs
 from time import time
+from names import names
 
 
 async def single_data_retrieval(ip, app_session):
@@ -40,7 +41,7 @@ async def single_ip_processing(ip, conn, app_session, limit_hit=False):
 async def raw_country_code_stats_formattor(data_list):
     temp_dict = {}
     for item in data_list:
-        temp_dict[item["country_code"]] = item["count"]
+        temp_dict[names[item["country_code"]]] = item["count"]
     return temp_dict
 
 
