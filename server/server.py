@@ -37,7 +37,7 @@ async def ip_submit_handler(request):
     except KeyError:
         return sanic.response.json({"Error": "KeyError. Please send your JSON POST request with the JSON key being 'ip_list'"}, status=400)
     else:
-        print('''f"From {request.ip} Len: {assert isinstance(ip_list, )len(ip_list)}"''')
+        print(f"From {request.ip} Len: {len(ip_list)}")
 
         start_time = time()
         async with request.app.pool.acquire() as conn:

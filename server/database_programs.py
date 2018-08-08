@@ -1,4 +1,3 @@
-from time import time
 import ipaddress
 from typing import Union
 
