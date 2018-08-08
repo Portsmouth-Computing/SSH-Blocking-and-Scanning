@@ -35,7 +35,7 @@ async def ip_submit_handler(request):
     try:
         ip_list = request.json["ip_list"]
     except KeyError:
-        return sanic.response.json({"Error", "KeyError. Please send your JSON POST request with the JSON key being 'ip_list'"}, status=400)
+        return sanic.response.json({"Error": "KeyError. Please send your JSON POST request with the JSON key being 'ip_list'"}, status=400)
     else:
         print('''f"From {request.ip} Len: {assert isinstance(ip_list, )len(ip_list)}"''')
 
