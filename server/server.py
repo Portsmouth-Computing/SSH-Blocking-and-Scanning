@@ -31,18 +31,24 @@ async def ip_info(request):
 
 @app.route("/ip/list", methods=["POST"])
 async def ip_submit_handler(request):
-    print(f"From {request.ip} Len: {len(request.json['ip_list'])}")
 
-    start_time = time()
-    async with request.app.pool.acquire() as conn:
-        ip_list = await data_processing.processing_list(request.json["ip_list"], conn, app.session)
+    try:
+        ip_list = request.json("ip_list")
+    except KeyError:
+        return sanic.response.json({"Error", "KeyError. Please send your JSON POST request with the JSON key being 'ip_list'"}, status=400)
+    else:
+        print('''f"From {request.ip} Len: {assert isinstance(ip_list, )len(ip_list)}"''')
 
-    errored_list_count = 0
-    for ip in ip_list:
-        if ip["country"] == "??":
-            errored_list_count += 1
+        start_time = time()
+        async with request.app.pool.acquire() as conn:
+            ip_list = await data_processing.processing_list(ip_list, conn, app.session)
 
-    return sanic.response.json({"ip_list": ip_list, "time_taken": time()-start_time, "total_failed_amount": errored_list_count})
+        errored_list_count = 0
+        for ip in ip_list:
+            if ip["country"] == "??":
+                errored_list_count += 1
+
+        return sanic.response.json({"ip_list": ip_list, "time_taken": time()-start_time, "total_failed_amount": errored_list_count})
 
 
 if __name__ == "__main__":
