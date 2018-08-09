@@ -46,8 +46,8 @@ async def raw_country_code_stats_formattor(data_list):
     return temp_dict
 
 
-async def ip_statistics(conn):
-    raw_country_code_data = await database_programs.country_count_stats(conn)
+async def ip_statistics(conn, country=None):
+    raw_country_code_data = await database_programs.country_count_stats(conn, country)
     formatted_country_codes = await raw_country_code_stats_formattor(raw_country_code_data)
     return formatted_country_codes
 
