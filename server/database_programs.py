@@ -85,5 +85,5 @@ async def country_count_stats(conn, country=None):
         return await conn.fetch("""
         SELECT COUNT(country_code), country_code FROM ip_storage GROUP BY country_code ORDER BY 1 DESC""")
     else:
-        return await conn.fetch("""
-        SELECT COUNT(country_code), country_code FROM ip_storage WHERE country_code = $1""", country)
+        return await conn.fetchval("""
+        SELECT COUNT(country_code) FROM ip_storage WHERE country_code = $1""", country)
