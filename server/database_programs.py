@@ -83,7 +83,7 @@ async def insert_into_database(conn, ip, country):
 async def list_data_into_str(data_list: list):
     base_string = ""
     for item in data_list:
-        base_string = base_string + item + ", "
+        base_string = f"{base_string}\'{item}\'"
     base_string = base_string[:-2]
     print("BS, ", base_string)
     return base_string
