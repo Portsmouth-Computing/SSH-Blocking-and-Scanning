@@ -51,7 +51,7 @@ async def log_function(con, message):
 
 
 async def ip_statistics(conn, country=None):
-    await conn.add_log_listener(log_function)
+    conn.add_log_listener(log_function)
     raw_country_code_data = await database_programs.country_count_stats(conn, country)
     print("RCCD, ", raw_country_code_data)
     if country is None:
