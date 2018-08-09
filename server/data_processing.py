@@ -80,7 +80,10 @@ async def ip_statistics(conn, country=None):
                 formatted_country_codes = await raw_country_code_stats_formattor(raw_country_code_data)
                 return {"country_data": formatted_country_codes, "invalid_country_codes": erred_codes}
         else:
-            return {"Error": f"{erred_codes} were not found in the database. Please refer to ISO2 standard for Country Codes."}
+            if len(country) == 1:
+                return {"Error": f"\'{erred_codes[0]}\' was not found in the database. Please refer to ISO2 standard for Country Codes."}
+            else:
+                return {"Error": f"{', '.join(erred_codes)} were not found in the database. Please refer to the ISO2 standard for Country Codes."}
 
 
 async def processing_list(ip_list, conn, app_session):
