@@ -60,7 +60,7 @@ async def ip_statistics(conn, country=None):
     else:
         print("LEN, ", len(country))
         if len(country) == 1:
-            return {country[0]: raw_country_code_data}
+            return {names[country[0]]: raw_country_code_data}
         else:
             formatted_country_codes = await raw_country_code_stats_formattor(raw_country_code_data)
             return formatted_country_codes
