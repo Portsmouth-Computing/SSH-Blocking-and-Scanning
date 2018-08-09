@@ -14,6 +14,7 @@ async def single_data_retrieval(ip, app_session):
 
 
 async def single_ip_processing(ip, conn, app_session, limit_hit=False):
+    ip = ip.strip()
     ip_info = await database_programs.fetch_from_database(conn, ip)
 
     if ip_info is not None:

@@ -53,7 +53,7 @@ async def ip_submit_handler(request):
 
 @app.route("/ip/stats", methods=["GET"])
 async def ip_stats_handler(request):
-    if request.args is not {}:
+    if request.args != {}:
         async with request.app.pool.acquire() as conn:
             return sanic.response.json(await data_processing.ip_statistics(conn))
     else:
