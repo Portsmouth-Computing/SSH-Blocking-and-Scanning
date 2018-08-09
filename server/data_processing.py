@@ -48,10 +48,12 @@ async def raw_country_code_stats_formattor(data_list):
 
 async def ip_statistics(conn, country=None):
     raw_country_code_data = await database_programs.country_count_stats(conn, country)
+    print("RCCD, ", raw_country_code_data)
     if country is None:
         formatted_country_codes = await raw_country_code_stats_formattor(raw_country_code_data)
         return formatted_country_codes
     else:
+        print("LEN, ", len(country))
         if len(country) == 1:
             return {country[0]: raw_country_code_data}
         else:

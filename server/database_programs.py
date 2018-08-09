@@ -85,6 +85,7 @@ async def list_data_into_str(data_list: list):
     for item in data_list:
         base_string = base_string + item + ", "
     base_string = base_string[:-2]
+    print("BS, ", base_string)
     return base_string
 
 
