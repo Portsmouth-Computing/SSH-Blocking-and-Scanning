@@ -92,7 +92,7 @@ async def list_data_into_str(data_list: list):
     for item in data_list:
         base_string = f"{base_string}\'{item}\', "
     base_string = base_string[:-2]
-    print("BS, ", base_string)
+    print("BS, ", repr(base_string))
     return base_string
 
 
@@ -110,9 +110,9 @@ async def country_count_stats(conn, country=None):
             FROM ip_storage
             WHERE country_code = $1""", country[0])
         else:
-            return await conn.fetch("""
+            return await conn.fetch(f"""
             SELECT COUNT(country_code), country_code
             FROM ip_storage
-            WHERE country_code in ($1)
+            WHERE country_code in ({await list_data_into_str(country)})
             GROUP BY country_code
-            ORDER BY 1 DESC""", await list_data_into_str(country))
+            ORDER BY 1 DESC""")
