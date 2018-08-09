@@ -62,25 +62,25 @@ async def ip_statistics(conn, country=None):
 
     else:
         checked_list = []
-        errored_codes = []
+        erred_codes = []
 
         for code in country:
             if code in names:
                 checked_list.append(code)
             else:
-                errored_codes.append(code)
+                erred_codes.append(code)
 
         if checked_list:
             raw_country_code_data = await database_programs.country_count_stats(conn, checked_list)
             print("RCCD, ", raw_country_code_data)
-            print("LEN, ", len(checked_list), len(errored_codes))
+            print("LEN, ", len(checked_list), len(erred_codes))
             if len(country) == 1:
                 return {names[country[0]]: raw_country_code_data}
             else:
                 formatted_country_codes = await raw_country_code_stats_formattor(raw_country_code_data)
-                return {"country_data": formatted_country_codes, "invalid_country_codes": errored_codes}
+                return {"country_data": formatted_country_codes, "invalid_country_codes": erred_codes}
         else:
-            return {"Error": "{} were not found in the database. Please refer to ISO2 standard for Country Codes."}
+            return {"Error": f"{erred_codes} were not found in the database. Please refer to ISO2 standard for Country Codes."}
 
 
 async def processing_list(ip_list, conn, app_session):
