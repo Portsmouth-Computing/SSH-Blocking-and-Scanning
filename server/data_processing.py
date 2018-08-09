@@ -48,11 +48,15 @@ async def raw_country_code_stats_formattor(data_list):
 
 async def ip_statistics(conn, country=None):
     raw_country_code_data = await database_programs.country_count_stats(conn, country)
-    if country is not None:
+    if country is None:
         formatted_country_codes = await raw_country_code_stats_formattor(raw_country_code_data)
         return formatted_country_codes
     else:
-        return {country: raw_country_code_data}
+        if len(country) == 1:
+            return {country: raw_country_code_data}
+        else:
+            formatted_country_codes = await raw_country_code_stats_formattor(raw_country_code_data)
+            return formatted_country_codes
 
 
 async def processing_list(ip_list, conn, app_session):
