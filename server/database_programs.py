@@ -80,10 +80,31 @@ async def insert_into_database(conn, ip, country):
                        ip, country)
 
 
+async def list_data_into_str(data_list: list):
+    base_string = ""
+    for item in data_list:
+        base_string = base_string + item + ", "
+    base_string = base_string[:-2]
+    return base_string
+
+
 async def country_count_stats(conn, country=None):
     if country is None:
         return await conn.fetch("""
-        SELECT COUNT(country_code), country_code FROM ip_storage GROUP BY country_code ORDER BY 1 DESC""")
+        SELECT COUNT(country_code),country_code
+        FROM ip_storage
+        GROUP BY country_code
+        ORDER BY 1 DESC""")
     else:
-        return await conn.fetchval("""
-        SELECT COUNT(country_code) FROM ip_storage WHERE country_code = $1""", country)
+        if len(country) == 1:
+            return await conn.fetchval("""
+            SELECT COUNT(country_code)
+            FROM ip_storage
+            WHERE country_code = $1""", country)
+        else:
+            return await conn.fetch("""
+            SELECT COUNT(country_code), country_code
+            FROM ip_storage
+            WHERE country_code in ($1)
+            GROUP BY country_code
+            ORDER BY 1 DESC""", await list_data_into_str(country))
