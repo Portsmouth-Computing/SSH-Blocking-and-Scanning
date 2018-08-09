@@ -46,12 +46,12 @@ async def raw_country_code_stats_formattor(data_list):
     return temp_dict
 
 
-async def log_function(connection, pid, channel, payload):
-    print(connection, pid, channel, payload)
+async def log_function(con, message):
+    print(con, message)
 
 
 async def ip_statistics(conn, country=None):
-    await conn.add_listener("INFO", log_function)
+    await conn.add_log_listener(log_function)
     raw_country_code_data = await database_programs.country_count_stats(conn, country)
     print("RCCD, ", raw_country_code_data)
     if country is None:
