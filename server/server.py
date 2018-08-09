@@ -59,7 +59,11 @@ async def ip_stats_handler(request):
             return sanic.response.json(await data_processing.ip_statistics(conn))
     else:
         async with request.app.pool.acquire() as conn:
-            return sanic.response.json(await data_processing.ip_statistics(conn, country=request.args["country"]))
+            processed_data = await data_processing.ip_statistics(conn, country=request.args["country"])
+            if "Error" not in processed_data.keys():
+                return sanic.response.json(processed_data)
+            else:
+                return sanic.response.json(processed_data, status=400)
 
 
 if __name__ == "__main__":

@@ -52,18 +52,35 @@ async def log_function(con, message):
 
 async def ip_statistics(conn, country=None):
     conn.add_log_listener(log_function)
-    raw_country_code_data = await database_programs.country_count_stats(conn, country)
-    print("RCCD, ", raw_country_code_data)
+
     if country is None:
+        raw_country_code_data = await database_programs.country_count_stats(conn, country)
+        print("RCCD, ", raw_country_code_data)
         formatted_country_codes = await raw_country_code_stats_formattor(raw_country_code_data)
+
         return formatted_country_codes
+
     else:
-        print("LEN, ", len(country))
-        if len(country) == 1:
-            return {names[country[0]]: raw_country_code_data}
+        checked_list = []
+        errored_codes = []
+
+        for code in country:
+            if code in names:
+                checked_list.append(code)
+            else:
+                errored_codes.append(code)
+
+        if checked_list:
+            raw_country_code_data = await database_programs.country_count_stats(conn, checked_list)
+            print("RCCD, ", raw_country_code_data)
+            print("LEN, ", len(checked_list), len(errored_codes))
+            if len(country) == 1:
+                return {names[country[0]]: raw_country_code_data}
+            else:
+                formatted_country_codes = await raw_country_code_stats_formattor(raw_country_code_data)
+                return {"country_data": formatted_country_codes, "invalid_country_codes": errored_codes}
         else:
-            formatted_country_codes = await raw_country_code_stats_formattor(raw_country_code_data)
-            return formatted_country_codes
+            return {"Error": "{} were not found in the database. Please refer to ISO2 standard for Country Codes."}
 
 
 async def processing_list(ip_list, conn, app_session):
