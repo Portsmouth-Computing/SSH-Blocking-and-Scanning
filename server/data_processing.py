@@ -53,7 +53,7 @@ async def ip_statistics(conn, country=None):
         return formatted_country_codes
     else:
         if len(country) == 1:
-            return {country: raw_country_code_data}
+            return {country[0]: raw_country_code_data}
         else:
             formatted_country_codes = await raw_country_code_stats_formattor(raw_country_code_data)
             return formatted_country_codes
