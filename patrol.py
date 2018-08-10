@@ -22,11 +22,11 @@ def main():
                     if failed_user_ip not in ip_temp_list:
                         ip_temp_list.append(failed_user_ip)
 
-            #if "Failed password for" in line.strip():
-            #    if not line_split[8].lower().startswith("up"):
-            #        failed_ip = line_split[10]
-            #        if failed_ip not in ip_list or failed_ip not in ip_temp_list:
-            #            ip_temp_list.append(failed_ip)
+            if "Failed password for" in line.strip():
+                if not line_split[8].lower().startswith("up"):
+                    failed_ip = line_split[10]
+                    if failed_ip not in ip_temp_list:
+                        ip_temp_list.append(failed_ip)
 
             elif "Unable to negotiate with" in line.strip():
                 negotiate_ip = line_split[9]
