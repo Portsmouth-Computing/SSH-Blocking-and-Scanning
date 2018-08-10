@@ -66,7 +66,7 @@ async def ip_statistics(conn, country=None):
         erred_codes = []
 
         print(1, country)
-        country = itertools.chain.from_iterable(x.split() for x in country)
+        country = list(itertools.chain.from_iterable(x.split() for x in country))
         print(2, country)
 
         for code in country:
