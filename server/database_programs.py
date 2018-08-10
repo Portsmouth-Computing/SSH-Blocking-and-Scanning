@@ -115,4 +115,4 @@ async def country_count_stats(conn, country=None):
             FROM ip_storage
             WHERE country_code = ANY($1::text[])
             GROUP BY country_code
-            ORDER BY 1 DESC""", await list_data_into_str(country))
+            ORDER BY 1 DESC""", country)
