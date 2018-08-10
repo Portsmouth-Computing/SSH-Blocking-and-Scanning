@@ -46,8 +46,8 @@ with open("/etc/hosts.deny", "w") as file:
     for line in static_info:
         file.write(line)
     for ip in UNSAFE_IP_LIST:
-        file.write(f"sshd: {ip}\n")
+        file.write("sshd: {}\n".format(ip))
     for ip in BACKED_UP_IP_LIST:
-        file.write(f"{ip}\n")
+        file.write("{}\n".format(ip))
 
 subprocess.call("sudo service sshd restart", shell=True)
