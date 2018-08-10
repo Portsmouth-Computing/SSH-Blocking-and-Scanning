@@ -65,7 +65,9 @@ async def ip_statistics(conn, country=None):
         checked_list = []
         erred_codes = []
 
+        print(1, country)
         country = itertools.chain.from_itertable(x.split() for x in country)
+        print(2, country)
 
         for code in country:
             if code in names:
