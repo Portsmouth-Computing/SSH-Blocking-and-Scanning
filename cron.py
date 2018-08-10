@@ -20,6 +20,7 @@ hosts_file_contents = []
 line_counter = 0
 info_line = 0
 hosts_file_storage = []
+BACKED_UP_IP_LIST = []
 
 with open("/etc/hosts.deny") as file:
     for line in file:
@@ -29,6 +30,15 @@ with open("/etc/hosts.deny") as file:
         else:
             hosts_file_storage.append(line)
             line_counter += 1
+    line_counter = 0
+    for line in file:
+        if line_counter > info_line:
+            temp_line = line.strip()
+            if temp_line != "":
+                BACKED_UP_IP_LIST.append(temp_line)
+        else:
+            line_counter += 1
+
 
 with open("/etc/hosts.deny", "w") as file:
     for line in hosts_file_storage:
@@ -36,6 +46,8 @@ with open("/etc/hosts.deny", "w") as file:
     for line in static_info:
         file.write(line)
     for ip in UNSAFE_IP_LIST:
-        file.write(ip)
+        file.write(f"sshd: {ip}\n")
+    for ip in BACKED_UP_IP_LIST:
+        file.write(f"sshd: {ip}\n")
 
 subprocess.call("sudo service sshd restart", shell=True)
