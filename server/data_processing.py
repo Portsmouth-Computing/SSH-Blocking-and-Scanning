@@ -1,6 +1,7 @@
 import database_programs
 from time import time
 from names import names
+import itertools
 
 
 async def single_data_retrieval(ip, app_session):
@@ -63,6 +64,8 @@ async def ip_statistics(conn, country=None):
     else:
         checked_list = []
         erred_codes = []
+
+        country = itertools.chain.from_itertable(x.split() for x in country)
 
         for code in country:
             if code in names:
