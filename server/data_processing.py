@@ -85,10 +85,10 @@ async def ip_statistics(conn, country=None):
                 return {"country_data": formatted_country_codes, "invalid_country_codes": erred_codes}
         else:
             if len(country) == 1:
-                return {"Error": f"\'{erred_codes[0]}\' was not found in the database."
+                return {"Error": f"\'{erred_codes[0]}\' was not found in the database. "
                                  f"Please refer to ISO2 standard for Country Codes."}
             else:
-                return {"Error": f"{', '.join(erred_codes)} were not found in the database."
+                return {"Error": f"{', '.join(erred_codes)} were not found in the database. "
                                  f"Please refer to the ISO2 standard for Country Codes."}
 
 
