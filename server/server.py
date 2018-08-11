@@ -30,7 +30,7 @@ async def ip_info(request):
                                        status=400)
     elif request.args != {}:
         try:
-            ip = request.args["ip"]
+            ip = request.args["ip"][0]
         except KeyError:
             return sanic.response.json({"Error",
                                         "GET Request needs to come in the form of `{\"ip\": \"127.0.0.1\"}"},
