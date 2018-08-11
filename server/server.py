@@ -10,6 +10,8 @@ print("Imported")
 app = Sanic("ssh-server")
 print("Setup App")
 
+app.static("/favicon.ico", "./favicon.ico", name="favicon")
+
 
 @app.listener("before_server_start")
 async def before_server_starts_handler(app, loop):
