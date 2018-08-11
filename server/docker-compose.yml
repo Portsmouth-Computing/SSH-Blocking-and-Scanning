@@ -3,7 +3,7 @@ services:
   ssh-web:
     build: .
     ports:
-      - "880:80"
+      - "80:80"
     volumes:
       - .:/ssh_blocker
   ssh-postgres:
