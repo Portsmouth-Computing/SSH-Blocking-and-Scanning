@@ -21,7 +21,7 @@ async def before_server_starts_handler(app, loop):
 
 @app.route("/ip/single", methods=["GET"])
 async def ip_info(request):
-    if request.json() != {}:
+    if request.json != {}:
         try:
             ip = request.json["ip"]
         except KeyError:
