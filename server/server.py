@@ -21,8 +21,27 @@ async def before_server_starts_handler(app, loop):
 
 @app.route("/ip/single", methods=["GET"])
 async def ip_info(request):
+    if request.json() != {}:
+        try:
+            ip = request.json["ip"]
+        except KeyError:
+            return sanic.response.json({"Error",
+                                        "GET Request needs to come in the form of `{\"ip\": \"127.0.0.1\"}"},
+                                       status=400)
+    elif request.args != {}:
+        try:
+            ip = request.args["ip"]
+        except KeyError:
+            return sanic.response.json({"Error",
+                                        "GET Request needs to come in the form of `{\"ip\": \"127.0.0.1\"}"},
+                                       status=400)
+    else:
+        return sanic.response.json({"Error",
+                                    "GET Request needs to come in the form of `{\"ip\": \"127.0.0.1\"}"},
+                                   status=400)
+
     async with request.app.pool.acquire() as conn:
-        ip_info = await data_processing.single_ip_processing(request.json["ip"], conn, app.session)
+        ip_info = await data_processing.single_ip_processing(ip, conn, app.session)
     if ip_info["country"] == "??":
         return sanic.response.json(ip_info, status=429)
     else:
