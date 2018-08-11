@@ -19,7 +19,7 @@ async def before_server_starts_handler(app, loop):
     print("Created session")
 
 
-@app.route("/ip/single", methods=["POST"])
+@app.route("/ip/single", methods=["GET"])
 async def ip_info(request):
     async with request.app.pool.acquire() as conn:
         ip_info = await data_processing.single_ip_processing(request.json["ip"], conn, app.session)
@@ -29,7 +29,7 @@ async def ip_info(request):
         return sanic.response.json(ip_info)
 
 
-@app.route("/ip/list", methods=["POST"])
+@app.route("/ip/list", methods=["GET"])
 async def ip_submit_handler(request):
 
     try:
