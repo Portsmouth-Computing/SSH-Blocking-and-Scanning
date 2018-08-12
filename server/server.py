@@ -29,7 +29,7 @@ async def before_server_starts_handler(app, loop):
 
 
 @app.route("/")
-async def home_handler(app, loop):
+async def home_handler(request):
     return sanic.response.text("There is no 127.0.0.1 for you. Please refer to the docs for the endpoints")
 
 
