@@ -2,10 +2,11 @@ import database_programs
 from time import time
 from names import names
 import itertools
+from config import API_KEY
 
 
 async def single_data_retrieval(ip, app_session):
-    async with app_session.get(f"http://www.ipinfo.io/{ip}/json") as resp:
+    async with app_session.get(f"http://www.ipinfo.io/{ip}/json?token={API_KEY}") as resp:
         json = await resp.json()
         status = resp.status
     try:
