@@ -4,6 +4,9 @@ from names import names
 import itertools
 from config import API_KEY
 import logging
+log = logging.getLogger(__name__)
+log.info("Imported")
+log.info("Setup logger")
 
 
 async def single_data_retrieval(ip, app_session):
@@ -17,20 +20,20 @@ async def single_data_retrieval(ip, app_session):
     try:
         city = json["city"].strip()
     except KeyError:
-        print("KE City", ip)
+        log.warning("KE City", ip)
         city = "??"
     try:
         org = json["org"].strip()
     except KeyError:
-        print("KE org", ip)
+        log.warning("KE org", ip)
         org = "??"
     try:
         region = json["region"].strip()
     except KeyError:
-        print("KE region", ip)
+        log.warning("KE region", ip)
         region = "??"
     if status == 200:
-        logging.info(f"Fetched country ({country}) for {ip}")
+        log.info(f"Fetched country ({country}) for {ip}")
     return country, city, org, region, status
 
 
@@ -53,7 +56,7 @@ async def single_ip_processing(ip, conn, app_session, limit_hit=False):
                 return await database_programs.fetch_formattor(ip_info)
 
             else:
-                logging.warning(f"{status} for {ip}")
+                log.warning(f"{status} for {ip}")
                 return {"ip": ip,
                         "country": "??",
                         "city": "??",

@@ -7,7 +7,10 @@ import aiohttp
 from time import time
 import sanic_logging
 import logging
-print("Imported")
+logging.info("Imported")
+
+log = logging.getLogger(__name__)
+log.info("Setup logger")
 
 if __name__ != "__main__":
     exit()
@@ -15,10 +18,10 @@ if __name__ != "__main__":
 
 sanic_logging.fix_logging()
 app = Sanic("ssh-server", configure_logging=False)
-
-print("Setup App")
+log.info("Setup App")
 
 app.static("/favicon.ico", "./favicon.ico", name="favicon")
+log.info("Setup static routes")
 
 
 @app.listener("before_server_start")
