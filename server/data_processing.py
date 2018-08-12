@@ -21,7 +21,7 @@ async def single_data_retrieval(ip, app_session):
         org = json["org"].strip()
     except KeyError:
         print("KE org", ip)
-        city = "??"
+        org = "??"
     try:
         region = json["region"].strip()
     except KeyError:
