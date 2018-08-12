@@ -8,10 +8,25 @@ async def single_data_retrieval(ip, app_session):
     async with app_session.get(f"http://www.ipinfo.io/{ip}/json") as resp:
         json = await resp.json()
         status = resp.status
-    country = json["country"].strip()
-    city = json["city"].strip()
-    org = json["org"].strip()
-    region = json["region"].strip()
+    try:
+        country = json["country"].strip()
+    except KeyError:
+        country = "??"
+    try:
+        city = json["city"].strip()
+    except KeyError:
+        print("KE City", ip)
+        city = "??"
+    try:
+        org = json["org"].strip()
+    except KeyError:
+        print("KE org", ip)
+        city = "??"
+    try:
+        region = json["region"].strip()
+    except KeyError:
+        print("KE region", ip)
+        region = "??"
     if status == 200:
         print(f"Fetched country ({country}) for {ip}")
     return country, city, org, region, status
