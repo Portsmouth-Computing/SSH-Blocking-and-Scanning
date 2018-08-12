@@ -1,0 +1,19 @@
+version: '3'
+
+services:
+  api:
+    build:
+      context: .
+      dockerfile: ./api/Dockerfile
+    depends_on:
+      - postgres
+    volumes:
+      - ./:/app
+    ports:
+      - 880:8000
+
+  postgres:
+    image: postgres:10-alpine
+    volumes:
+      - ./data/postgres:/var/lib/postgresql/data
+      - ./schema.sql:/docker-entrypoint-initdb.d/schema.sql

@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 """
 MIT License
 
@@ -22,30 +24,12 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 """
 
-import logging
 import contextlib
+import logging
 
 
 # modules which have spammy or not useful logs on DEBUG
 SILENCED_LOGGERS = ('discord', 'PIL', 'websockets')
-
-
-def fix_logging():
-    # as sanic requires a different log format for it's access log we have to do this little dance
-
-    formatter = logging.Formatter(
-        '[%(asctime)s] [%(levelname)s] [%(name)s]: %(request)s %(status)d %(byte)d %(host)s %(message)s',
-        datefmt='%Y-%m-%d %H:%M:%S'
-    )
-
-    handler = logging.StreamHandler()
-    handler.setFormatter(formatter)
-
-    access = logging.getLogger('sanic.access')
-    access.addHandler(handler)
-
-    # normally loggers propagate to higher hierarchy loggers, but due to the change in format we have to disable this
-    access.propagate = False
 
 
 @contextlib.contextmanager
@@ -71,3 +55,21 @@ def setup_logging():
         yield
     finally:
         logging.shutdown()
+
+
+def fix_access_log():
+    # as sanic requires a different log format for it's access log we have to do this little dance
+
+    formatter = logging.Formatter(
+        '[%(asctime)s] [%(levelname)s] [%(name)s]: %(request)s %(status)d %(byte)d %(message)s',
+        datefmt='%Y-%m-%d %H:%M:%S',
+    )
+
+    handler = logging.StreamHandler()
+    handler.setFormatter(formatter)
+
+    access = logging.getLogger('sanic.access')
+    access.addHandler(handler)
+
+    # normally loggers propagate to higher hierarchy loggers, due to the change in format we disable this
+    access.propagate = False

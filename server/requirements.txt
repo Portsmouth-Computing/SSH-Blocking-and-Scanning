@@ -1,5 +1,0 @@
-sanic
-aiohttp
-asyncpg
-cchardet
-requests
