@@ -13,6 +13,9 @@ async def fetch_from_database(conn, ip):
 async def fetch_formattor(ip_dict):
     formatted_ip_dict = {"ip": await ip_formattor(ip_dict["ip"]),
                          "country": ip_dict["country_code"],
+                         "city": ip_dict["city"],
+                         "region": ip_dict["region"],
+                         "org": ip_dict["org"],
                          "last_updated": ip_dict["last_updated"],
                          "amount_checked": ip_dict["accessed"]}
 
@@ -74,10 +77,10 @@ async def update_entry(conn, ip, current_total):
     """, ip, current_total)
 
 
-async def insert_into_database(conn, ip, country):
+async def insert_into_database(conn, ip, country, city, region, org):
     await conn.execute("""
-    INSERT INTO ip_storage(ip, country_code) VALUES($1, $2)""",
-                       ip, country)
+    INSERT INTO ip_storage(ip, country_code, city, region, org) VALUES($1, $2, $3, $4, $5)""",
+                       ip, country, city, region, org)
 
 
 async def list_data_into_str(data_list: list):

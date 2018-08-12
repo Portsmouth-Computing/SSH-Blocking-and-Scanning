@@ -5,13 +5,16 @@ import itertools
 
 
 async def single_data_retrieval(ip, app_session):
-    async with app_session.get(f"http://www.ipinfo.io/{ip}/country") as resp:
-        country = await resp.text()
-        country = country.strip()
+    async with app_session.get(f"http://www.ipinfo.io/{ip}") as resp:
+        json = await resp.json()
         status = resp.status
+    country = json["country"].strip()
+    city = json["city"].strip()
+    org = json["org"].strip()
+    region = json["region"].strip()
     if status == 200:
         print(f"Fetched country ({country}) for {ip}")
-    return country, status
+    return country, city, org, region, status
 
 
 async def single_ip_processing(ip, conn, app_session, limit_hit=False):
@@ -25,19 +28,31 @@ async def single_ip_processing(ip, conn, app_session, limit_hit=False):
     else:
 
         if not limit_hit:
-            country, status = await single_data_retrieval(ip, app_session)
+            country, city, org, region, status = await single_data_retrieval(ip, app_session)
 
             if status == 200:
-                await database_programs.insert_into_database(conn, ip, country)
+                await database_programs.insert_into_database(conn, ip, country, city, org, region)
                 ip_info = await database_programs.fetch_from_database(conn, ip)
                 return await database_programs.fetch_formattor(ip_info)
 
             else:
                 print(f"{status} for {ip}")
-                return {"ip": ip, "country": "??", "last_updated": time(), "amount_checked": 1}
+                return {"ip": ip,
+                        "country": "??",
+                        "city": "??",
+                        "region": "??",
+                        "org": "??",
+                        "last_updated": time(),
+                        "amount_checked": 1}
 
         else:
-            return {"ip": ip, "country": "??", "last_updated": time(), "amount_checked": 1}
+            return {"ip": ip,
+                    "country": "??",
+                    "city": "??",
+                    "region": "??",
+                    "org": "??",
+                    "last_updated": time(),
+                    "amount_checked": 1}
 
 
 async def raw_country_code_stats_formattor(data_list):
