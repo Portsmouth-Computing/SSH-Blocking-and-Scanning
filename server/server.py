@@ -28,6 +28,11 @@ async def before_server_starts_handler(app, loop):
     print("Created session")
 
 
+@app.route("/")
+async def home_handler(app, loop):
+    return sanic.response.text("There is no 127.0.0.1 for you. Please refer to the docs for the endpoints")
+
+
 @app.route("/ip/single", methods=["GET"])
 async def ip_info(request):
     if request.json is not None:
