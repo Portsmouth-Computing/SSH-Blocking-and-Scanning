@@ -37,6 +37,11 @@ async def home_handler(request):
     return sanic.response.text("There is no 127.0.0.1 for you. Please refer to the docs for the endpoints")
 
 
+@app.route("/", methods=["HEAD"])
+async def home_head_handler(request):
+    return sanic.response.text("", status=200)
+
+
 @app.route("/ip/single", methods=["GET"])
 async def ip_info(request):
     if request.json is not None:
