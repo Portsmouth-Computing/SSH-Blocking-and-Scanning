@@ -6,6 +6,7 @@ import data_processing
 import aiohttp
 from time import time
 import sanic_logging
+import logging
 print("Imported")
 
 if __name__ != "__main__":
@@ -23,9 +24,9 @@ app.static("/favicon.ico", "./favicon.ico", name="favicon")
 @app.listener("before_server_start")
 async def before_server_starts_handler(app, loop):
     app.pool = await asyncpg.create_pool(host="ssh-postgres", user="postgres")
-    print("Connected to database")
+    logging.info("Connected to database")
     app.session = aiohttp.ClientSession()
-    print("Created session")
+    logging.info("Created session")
 
 
 @app.route("/")
@@ -70,7 +71,7 @@ async def ip_submit_handler(request):
     except KeyError:
         return sanic.response.json({"Error": "KeyError. Please send your JSON POST request with the JSON key being 'ip_list'"}, status=400)
     else:
-        print(f"From {request.ip} Len: {len(ip_list)}")
+        logging.info(f"From {request.ip} Len: {len(ip_list)}")
 
         start_time = time()
         async with request.app.pool.acquire() as conn:
@@ -86,7 +87,6 @@ async def ip_submit_handler(request):
 
 @app.route("/ip/stats", methods=["GET"])
 async def ip_stats_handler(request):
-    print(request.args)
     if request.args == {}:
         async with request.app.pool.acquire() as conn:
             return sanic.response.json(await data_processing.ip_statistics(conn))
@@ -101,5 +101,5 @@ async def ip_stats_handler(request):
 
 with sanic_logging.setup_logging():
     ip = requests.get("http://api.ipify.org")
-    print(f"Running on {ip.text}")
+    logging.info(f"Running on {ip.text}")
     app.run(host="0.0.0.0", port=80, access_log=True)

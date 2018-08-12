@@ -3,6 +3,7 @@ from time import time
 from names import names
 import itertools
 from config import API_KEY
+import logging
 
 
 async def single_data_retrieval(ip, app_session):
@@ -29,7 +30,7 @@ async def single_data_retrieval(ip, app_session):
         print("KE region", ip)
         region = "??"
     if status == 200:
-        print(f"Fetched country ({country}) for {ip}")
+        logging.info(f"Fetched country ({country}) for {ip}")
     return country, city, org, region, status
 
 
@@ -52,7 +53,7 @@ async def single_ip_processing(ip, conn, app_session, limit_hit=False):
                 return await database_programs.fetch_formattor(ip_info)
 
             else:
-                print(f"{status} for {ip}")
+                logging.warning(f"{status} for {ip}")
                 return {"ip": ip,
                         "country": "??",
                         "city": "??",
@@ -78,16 +79,9 @@ async def raw_country_code_stats_formattor(data_list):
     return temp_dict
 
 
-async def log_function(con, message):
-    print(con, message)
-
-
 async def ip_statistics(conn, country=None):
-    conn.add_log_listener(log_function)
-
     if country is None:
         raw_country_code_data = await database_programs.country_count_stats(conn, country)
-        print("RCCD, ", raw_country_code_data)
         formatted_country_codes = await raw_country_code_stats_formattor(raw_country_code_data)
 
         return formatted_country_codes
@@ -96,9 +90,7 @@ async def ip_statistics(conn, country=None):
         checked_list = []
         erred_codes = []
 
-        print(1, country)
         country = list(itertools.chain.from_iterable(x.split() for x in country))
-        print(2, country)
 
         for code in country:
             if code in names:
@@ -108,8 +100,6 @@ async def ip_statistics(conn, country=None):
 
         if checked_list:
             raw_country_code_data = await database_programs.country_count_stats(conn, checked_list)
-            print("RCCD, ", raw_country_code_data)
-            print("LEN, ", len(checked_list), len(erred_codes))
             if len(checked_list) == 1:
                 if len(country) == 1:
                     return {names[checked_list[0]]: raw_country_code_data}
