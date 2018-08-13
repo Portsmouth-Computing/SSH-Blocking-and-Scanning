@@ -158,7 +158,7 @@ async def fetch_lookup_stats(countries, *, conn):
     if countries is not None:
         records = await conn.fetch(
             """
-            SELECT count(*) AS stored_ips, sum(accessed) AS lookups, country_code
+            SELECT count(*) AS stored_ips, CAST (sum(accessed) AS INTEGER) AS lookups, country_code
             FROM ip_storage
             WHERE country_code = ANY($1::TEXT[])
             GROUP BY country_code
@@ -168,7 +168,7 @@ async def fetch_lookup_stats(countries, *, conn):
     else:
         records = await conn.fetch(
             """
-            SELECT count(*) AS stored_ips, sum(accessed) AS lookups, country_code
+            SELECT count(*) AS stored_ips, CAST (sum(accessed) AS INTEGER) AS lookups, country_code
             FROM ip_storage
             GROUP BY country_code
             """
