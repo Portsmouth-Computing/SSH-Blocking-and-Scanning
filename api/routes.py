@@ -28,9 +28,14 @@ import itertools
 
 import sanic
 
+import ipaddress
+
+import logging
+
 from .helpers import fetch_ip_info, fetch_lookup_stats
 
 bp = sanic.Blueprint('API-Routes')
+log = logging.getLogger(__name__)
 
 
 @bp.route('/ip/info', methods=['GET'])
@@ -49,6 +54,15 @@ async def get_ip_info(request):
             return sanic.response.json({'error': error}, status=400)
 
     app = request.app
+
+    temp_address = []
+    for ip_address in addresses:
+        try:
+            temp_address.append(ipaddress.ip_address(ip_address))
+        except ValueError:
+            log.warning(f"ValueError: Issue making \'{ip_address}\' into IPAddress")
+    addresses = list(temp_address)
+    del temp_address
 
     return sanic.response.json(
         {x: await fetch_ip_info(x, conn=app.db, session=app.session, token=app.cfg.token) for x in set(addresses)}
