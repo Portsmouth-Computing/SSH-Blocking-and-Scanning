@@ -46,7 +46,7 @@ async def get_ip_info(request):
                 'or as a json body under the "ip" (single) or "addresses" (array) keys.'
             )
 
-            return sanic.response.json({'error': error})
+            return sanic.response.json({'error': error}, status=400)
 
     app = request.app
 
