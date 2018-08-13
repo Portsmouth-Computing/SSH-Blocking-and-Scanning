@@ -142,6 +142,7 @@ def format_response(info):
 
 # API statistics
 
+
 async def fetch_lookup_stats(countries, *, conn):
     """
     Fetch how many times all, a single or multiple countries have been looked up via the API.
