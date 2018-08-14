@@ -6,7 +6,7 @@ SAFE_LIST = ["GB"]
 UNSAFE_IP_LIST = []
 
 ip_list = patrol.main()
-process_list = requests.get("https://api.oceanlord.me/ip/list", json={"ip_list": ip_list})
+process_list = requests.get("https://api.oceanlord.me/ip/info", json={"ip_list": ip_list})
 
 for item in process_list.json()["ip_list"]:
     if item not in UNSAFE_IP_LIST:
