@@ -44,7 +44,7 @@ def main():
 
             elif "Failed password for invalid user" in line.strip():
                 if not line_split[10].lower().startswith("up"):
-                    failed_user_ip = line_split[12]
+                    failed_user_ip = line_split[11]
                     try:
                         ipaddress.ip_address(failed_user_ip)
                         if failed_user_ip not in ip_temp_list:
