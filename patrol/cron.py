@@ -1,4 +1,4 @@
-from patrol import patrol
+import patrol
 import requests
 import subprocess
 
