@@ -25,7 +25,7 @@ SOFTWARE.
 """
 
 import os
-
+import ipaddress
 
 def main():
     if os.geteuid() != 0:
@@ -42,13 +42,17 @@ def main():
             elif " sshd[" not in line:
                 continue
 
-            if "Failed password for invalid user" in line.strip():
+            elif "Failed password for invalid user" in line.strip():
                 if not line_split[10].lower().startswith("up"):
                     failed_user_ip = line_split[12]
-                    if failed_user_ip not in ip_temp_list:
-                        ip_temp_list.append(failed_user_ip)
+                    try:
+                        ipaddress.ip_address(failed_user_ip)
+                        if failed_user_ip not in ip_temp_list:
+                            ip_temp_list.append(failed_user_ip)
+                    except ValueError:
+                        print("Failed Invalid: ", line_split, failed_user_ip)
 
-            if "Failed password for" in line.strip():
+            elif "Failed password for" in line.strip():
                 if not line_split[8].lower().startswith("up"):
                     failed_ip = line_split[10]
                     if failed_ip not in ip_temp_list:
