@@ -8,6 +8,10 @@ UNSAFE_IP_LIST = []
 ip_list = patrol.main()
 process_list = requests.get("https://api.oceanlord.me/ip/info", json={"ip_list": ip_list})
 
+if process_list.status_code != 200:
+    print(process_list.status_code, process_list.text)
+    exit()
+    
 for item in process_list.json()["ip_list"]:
     if item not in UNSAFE_IP_LIST:
         if item["country"] not in SAFE_LIST:
