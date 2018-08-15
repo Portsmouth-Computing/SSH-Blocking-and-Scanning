@@ -12,10 +12,10 @@ if process_list.status_code != 200:
     print(process_list.status_code, process_list.text)
     exit()
 
-for item in process_list.json()["ip_list"]:
-    if item not in UNSAFE_IP_LIST:
-        if item["country"] not in SAFE_LIST:
-            UNSAFE_IP_LIST.append(item["ip"]["compressed"])
+for ip_address in list(process_list.json().keys()):
+    if ip_address not in UNSAFE_IP_LIST:
+        if ip_address["country"] not in SAFE_LIST and not ip_address["private"]:
+            UNSAFE_IP_LIST.append(ip_address)
 
 
 static_info = ["\n", "####### This section was created by a program to block irritating IP's", "\n"]
