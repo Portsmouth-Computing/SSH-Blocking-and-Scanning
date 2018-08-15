@@ -25,7 +25,11 @@ SOFTWARE.
 """
 
 import os
-import ipaddress
+import re
+re_ipv4 = re.compile("((?:\d{1,3}\.){3}\d{1,3})")
+re_ipv6 = re.compile("((?:\w{1,4}:){7}\w{1,4})")
+re_luma = re.compile(r'(?P<address>([a-f\d]{1,4}[\.:]){1,7}[a-f\d]{1,4})\sport')
+
 
 def main():
     if os.geteuid() != 0:
@@ -36,37 +40,13 @@ def main():
 
     with open("/var/log/auth.log") as file:
         for line in file:
-            line_split = line.strip().split()
-            if "Accepted publickey for kopeckyj from" in line:
-                continue
-            elif " sshd[" not in line:
-                continue
-
-            elif "Failed password for invalid user" in line.strip():
-                if not line_split[10].lower().startswith("up"):
-                    failed_user_ip = line_split[11]
-                    try:
-                        ipaddress.ip_address(failed_user_ip)
-                        if failed_user_ip not in ip_temp_list:
-                            ip_temp_list.append(failed_user_ip)
-                    except ValueError:
-                        print("Failed Invalid: ", line_split, failed_user_ip)
-
-            elif "Failed password for" in line.strip():
-                if not line_split[8].lower().startswith("up"):
-                    failed_ip = line_split[10]
-                    if failed_ip not in ip_temp_list:
-                        ip_temp_list.append(failed_ip)
-
-            elif "Unable to negotiate with" in line.strip():
-                negotiate_ip = line_split[9]
-                if negotiate_ip not in ip_temp_list:
-                    ip_temp_list.append(negotiate_ip)
-
-            elif "Did not receive identification string from" in line.strip():
-                identification_ip = line_split[11]
-                if identification_ip not in ip_temp_list:
-                    ip_temp_list.append(identification_ip)
+            ip = re_ipv4.search(line)
+            if ip is None:
+                ip = re_ipv6.search(line)
+                if ip is not None:
+                    ip_temp_list.append(ip.group())
+            else:
+                ip_temp_list.append(ip.group())
 
     return ip_temp_list
 
