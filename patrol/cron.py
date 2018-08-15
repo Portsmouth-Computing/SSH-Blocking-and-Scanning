@@ -14,7 +14,7 @@ if process_list.status_code != 200:
 
 for ip_address in list(process_list.json().keys()):
     if ip_address not in UNSAFE_IP_LIST:
-        if ip_address["country"] not in SAFE_LIST and not ip_address["private"]:
+        if process_list.json()[ip_address]["country"] not in SAFE_LIST and not process_list.json()[ip_address]["private"]:
             UNSAFE_IP_LIST.append(ip_address)
 
 
