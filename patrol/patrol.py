@@ -44,9 +44,11 @@ def main():
             if ip is None:
                 ip = re_ipv6.search(line)
                 if ip is not None:
-                    ip_temp_list.append(ip.group())
+                    if ip.group() not in ip_temp_list:
+                        ip_temp_list.append(ip.group())
             else:
-                ip_temp_list.append(ip.group())
+                if ip.group() not in ip_temp_list:
+                    ip_temp_list.append(ip.group())
 
     return ip_temp_list
 
