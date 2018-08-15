@@ -26,8 +26,9 @@ SOFTWARE.
 
 import os
 import re
-re_ipv4 = re.compile("((?:\d{1,3}\.){3}\d{1,3})")
-re_ipv6 = re.compile("((?:\w{1,4}:){7}\w{1,4})")
+
+re_ipv4 = re.compile(r"(?P<address>(?:\d{1,3}\.){3}\d{1,3})")
+re_ipv6 = re.compile(r"(?P<address>(?:\w{1,4}:){7}\w{1,4})")
 re_luma = re.compile(r'(?P<address>([a-f\d]{1,4}[\.:]){1,7}[a-f\d]{1,4})\sport')
 
 
@@ -36,7 +37,7 @@ def main():
         print("Not root. Need root perms to access auth.log")
         exit()
 
-    ip_temp_list = []
+    ip_templist = []
 
     with open("/var/log/auth.log") as file:
         for line in file:
@@ -44,13 +45,15 @@ def main():
             if ip is None:
                 ip = re_ipv6.search(line)
                 if ip is not None:
-                    if ip.group() not in ip_temp_list:
-                        ip_temp_list.append(ip.group())
+                    ip = ip.group("address")
+                    if ip not in ip_templist:
+                        ip_templist.append(ip)
             else:
-                if ip.group() not in ip_temp_list:
-                    ip_temp_list.append(ip.group())
+                ip = ip.group("address")
+                if ip not in ip_templist:
+                    ip_templist.append(ip)
 
-    return ip_temp_list
+    return ip_templist
 
 
 if __name__ == "__main__":
