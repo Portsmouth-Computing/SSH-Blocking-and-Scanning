@@ -5,7 +5,7 @@ import re
 
 SAFE_LIST = ["GB"]
 UNSAFE_IP_LIST = []
-re_luma = re.compile(r'(?P<address>([a-f\d]{1,4}[\.:]){1,7}[a-f\d]{1,4})\sport')
+re_luma = re.compile(r'(?P<address>(?:[a-f\d]{1,4}[\.:]){1,7}[a-f\d]{1,4})')
 
 ip_list = patrol.main()
 process_list = requests.get("https://api.oceanlord.me/ip/info", json={"addresses": ip_list})
