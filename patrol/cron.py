@@ -41,8 +41,11 @@ with open("/etc/hosts.deny") as file:
         if line_counter > info_line:
             temp_line = line.strip()
             if temp_line != "":
-                ip = re_luma.search(temp_line)
-                BACKED_UP_IP_LIST.append(ip.group("addresses"))
+                try:
+                    ip = re_luma.search(temp_line)
+                    BACKED_UP_IP_LIST.append(ip.group("addresses"))
+                except AttributeError:
+                    print(temp_line, re_luma.search(temp_line))
         else:
             line_counter += 1
 
