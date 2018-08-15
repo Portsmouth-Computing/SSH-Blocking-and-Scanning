@@ -1,9 +1,11 @@
 import patrol
 import requests
 import subprocess
+import re
 
 SAFE_LIST = ["GB"]
 UNSAFE_IP_LIST = []
+re_luma = re.compile(r'(?P<address>([a-f\d]{1,4}[\.:]){1,7}[a-f\d]{1,4})\sport')
 
 ip_list = patrol.main()
 process_list = requests.get("https://api.oceanlord.me/ip/info", json={"addresses": ip_list})
@@ -39,19 +41,19 @@ with open("/etc/hosts.deny") as file:
         if line_counter > info_line:
             temp_line = line.strip()
             if temp_line != "":
-                BACKED_UP_IP_LIST.append(temp_line)
+                ip = re_luma.search(temp_line)
+                BACKED_UP_IP_LIST.append(ip.group("addresses"))
         else:
             line_counter += 1
 
+SET_IP_LIST = set(BACKED_UP_IP_LIST + UNSAFE_IP_LIST)
 
 with open("/etc/hosts.deny", "w") as file:
     for line in hosts_file_storage:
         file.write(line)
     for line in static_info:
         file.write(line)
-    for ip in UNSAFE_IP_LIST:
+    for ip in SET_IP_LIST:
         file.write("sshd: {}\n".format(ip))
-    for ip in BACKED_UP_IP_LIST:
-        file.write("{}\n".format(ip))
 
 subprocess.call("sudo service sshd restart", shell=True)
