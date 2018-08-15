@@ -29,7 +29,7 @@ import re
 
 re_ipv4 = re.compile(r"(?P<address>(?:\d{1,3}\.){3}\d{1,3})")
 re_ipv6 = re.compile(r"(?P<address>(?:\w{1,4}:){7}\w{1,4})")
-re_luma = re.compile(r'(?P<address>([a-f\d]{1,4}[\.:]){1,7}[a-f\d]{1,4})\sport')
+re_luma = re.compile(r'(?P<address>(?:[a-f\d]{1,4}[\.:]){1,7}[a-f\d]{1,4})')
 
 
 def main():
