@@ -33,12 +33,14 @@ re_ipv6 = re.compile(r"(?P<address>(?:\w{1,4}:){7}\w{1,4})")
 re_luma = re.compile(r'(?P<address>([a-f\d]{1,4}[\.:]){1,7}[a-f\d]{1,4})\sport')
 
 IGNORED_LINE_CONTENTS = [" CRON[",
-                         "refused connect from "]
+                         "refused connect from ",
+                         "input_userauth_request"]
 
 LINES_TO_TEST = ["Failed password for invalid user",
                  "Unable to negotiate with",
                  "Bad protocol version identification",
-                 "Service not available"]
+                 "Service not available",
+                 "Received disconnect from"]
 
 
 def regex_check(string):
@@ -95,5 +97,5 @@ if __name__ == "__main__":
     print(len(ip_temp_list))
     for line in not_found_lines:
         if not any(line_part in line for line_part in IGNORED_LINE_CONTENTS):
-            print(line, regex_check(line) in ip_temp_list)
+            print(line, "\t\t\t\t", regex_check(line) in ip_temp_list)
             time.sleep(0.25)
