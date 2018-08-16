@@ -26,10 +26,42 @@ SOFTWARE.
 
 import os
 import re
+import time
 
 re_ipv4 = re.compile(r"(?P<address>(?:\d{1,3}\.){3}\d{1,3})")
 re_ipv6 = re.compile(r"(?P<address>(?:\w{1,4}:){7}\w{1,4})")
 re_luma = re.compile(r'(?P<address>([a-f\d]{1,4}[\.:]){1,7}[a-f\d]{1,4})\sport')
+
+
+def regex_check(string):
+    ip = re_ipv4.search(string)
+    if ip is None:
+        ip = re_ipv6.search(string)
+        if ip is not None:
+            ip = ip.group("address")
+            return ip
+    else:
+        ip = ip.group("address")
+        return ip
+
+
+def alt_main():
+    ip_templist = []
+    not_found_lines = []
+
+    with open("/var/log/auth.log") as file:
+        for line in file:
+            if "Failed password for invalid user" in line:
+                ip = regex_check(line.strip())
+                if ip is not None:
+                    ip_templist.append(ip)
+            elif "Unable to negotiate with" in line:
+                ip = regex_check(line.strip())
+                if ip is not None:
+                    ip_templist.append(ip)
+            else:
+                not_found_lines.append(line.strip())
+    return set(ip_templist), not_found_lines
 
 
 def main():
@@ -55,5 +87,8 @@ def main():
 
 
 if __name__ == "__main__":
-    ip_temp_list = main()
+    ip_temp_list, not_found_lines = alt_main()
     print(len(ip_temp_list))
+    for line in not_found_lines:
+        print(line)
+        time.sleep(0.25)
