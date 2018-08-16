@@ -90,5 +90,6 @@ if __name__ == "__main__":
     ip_temp_list, not_found_lines = alt_main()
     print(len(ip_temp_list))
     for line in not_found_lines:
-        print(line)
-        time.sleep(0.25)
+        if " CRON[" not in line:
+            print(line)
+            time.sleep(0.25)
