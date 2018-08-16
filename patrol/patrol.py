@@ -32,6 +32,11 @@ re_ipv4 = re.compile(r"(?P<address>(?:\d{1,3}\.){3}\d{1,3})")
 re_ipv6 = re.compile(r"(?P<address>(?:\w{1,4}:){7}\w{1,4})")
 re_luma = re.compile(r'(?P<address>([a-f\d]{1,4}[\.:]){1,7}[a-f\d]{1,4})\sport')
 
+IGNORED_LINE_CONTENTS = [" CRON[",
+                         "refused connect from ",
+                         "Bad protocol version identification",
+                         "Service not available"]
+
 
 def regex_check(string):
     ip = re_ipv4.search(string)
@@ -90,6 +95,6 @@ if __name__ == "__main__":
     ip_temp_list, not_found_lines = alt_main()
     print(len(ip_temp_list))
     for line in not_found_lines:
-        if " CRON[" not in line:
+        if any(line_part not in line for line_part in IGNORED_LINE_CONTENTS):
             print(line)
             time.sleep(0.25)
