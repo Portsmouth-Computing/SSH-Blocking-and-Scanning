@@ -41,7 +41,8 @@ IGNORED_LINE_CONTENTS = [" CRON[",
                          "pam_unix(sshd:auth): authentication failure",
                          "Disconnected from ",
                          "maximum authentication attempts exceeded",
-                         "more authentication failure"]
+                         "more authentication failure",
+                         "PAM service(sshd) ignoring max retries;"]
 
 LINES_TO_TEST = ["Failed password for invalid user",
                  "Unable to negotiate with",
@@ -127,5 +128,5 @@ if __name__ == "__main__":
     print(len(ip_temp_list))
     for line in not_found_lines:
         if not any(line_part in line for line_part in IGNORED_LINE_CONTENTS):
-            print(line, "\t"*4, regex_check(line) in ip_temp_list)
+            print(line, "\t"*7, regex_check(line) in ip_temp_list)
             time.sleep(0.25)
