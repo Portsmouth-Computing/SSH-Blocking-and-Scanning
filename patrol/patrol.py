@@ -42,13 +42,17 @@ IGNORED_LINE_CONTENTS = [" CRON[",
                          "Disconnected from ",
                          "maximum authentication attempts exceeded",
                          "more authentication failure",
-                         "PAM service(sshd) ignoring max retries;"]
+                         "PAM service(sshd) ignoring max retries;",
+                         "Received signal ",
+                         "Server listening on",
+                         "pam_unix(sudo:session)"]
 
 LINES_TO_TEST = ["Failed password for invalid user",
                  "Unable to negotiate with",
                  "Bad protocol version identification",
                  "Service not available",
-                 "Received disconnect from"]
+                 "Received disconnect from",
+                 "Invalid user  "]
 
 
 def regex_check(string):
