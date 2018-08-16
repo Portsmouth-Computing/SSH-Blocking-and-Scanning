@@ -33,9 +33,12 @@ re_ipv6 = re.compile(r"(?P<address>(?:\w{1,4}:){7}\w{1,4})")
 re_luma = re.compile(r'(?P<address>([a-f\d]{1,4}[\.:]){1,7}[a-f\d]{1,4})\sport')
 
 IGNORED_LINE_CONTENTS = [" CRON[",
-                         "refused connect from ",
-                         "Bad protocol version identification",
-                         "Service not available"]
+                         "refused connect from "]
+
+LINES_TO_TEST = ["Failed password for invalid user",
+                 "Unable to negotiate with",
+                 "Bad protocol version identification",
+                 "Service not available"]
 
 
 def regex_check(string):
@@ -56,11 +59,7 @@ def alt_main():
 
     with open("/var/log/auth.log") as file:
         for line in file:
-            if "Failed password for invalid user" in line:
-                ip = regex_check(line.strip())
-                if ip is not None:
-                    ip_templist.append(ip)
-            elif "Unable to negotiate with" in line:
+            if any(line_part in line for line_part in LINES_TO_TEST):
                 ip = regex_check(line.strip())
                 if ip is not None:
                     ip_templist.append(ip)
