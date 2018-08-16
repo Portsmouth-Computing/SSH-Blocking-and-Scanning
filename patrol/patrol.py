@@ -95,5 +95,5 @@ if __name__ == "__main__":
     print(len(ip_temp_list))
     for line in not_found_lines:
         if not any(line_part in line for line_part in IGNORED_LINE_CONTENTS):
-            print(line)
+            print(line, regex_check(line) in ip_temp_list)
             time.sleep(0.25)
