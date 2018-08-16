@@ -85,7 +85,7 @@ def sshd_config_scan():
             if "PermitRootLogin" in line:
                 line = line.strip().split(" ")
                 print(line)
-                if line[1].lower() is "no":
+                if line[1].lower() == "no":
                     return True
                 else:
                     return False
