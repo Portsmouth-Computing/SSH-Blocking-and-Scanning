@@ -36,7 +36,9 @@ IGNORED_LINE_CONTENTS = [" CRON[",
                          "refused connect from ",
                          "input_userauth_request",
                          "check pass; user unknown",
-                         "Too many authentication failures"]
+                         "Too many authentication failures",
+                         "Connection closed by",
+                         "pam_unix(sshd:auth): authentication failure"]
 
 LINES_TO_TEST = ["Failed password for invalid user",
                  "Unable to negotiate with",
