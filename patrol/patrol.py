@@ -74,6 +74,23 @@ def alt_main():
     return set(ip_templist), not_found_lines
 
 
+def sshd_config_scan():
+    if os.getuid() != 0:
+        print("Not root. Need root perms to access auth.log")
+        exit()
+
+    with open("/etc/ssh/sshd_config") as file:
+        for line in file:
+            if "PermitRootLogin" in line:
+                line = line.split(" ")
+                if line[1].lower() is "no":
+                    return True
+                else:
+                    return False
+        else:
+            return False
+
+
 def main():
     if os.geteuid() != 0:
         print("Not root. Need root perms to access auth.log")
@@ -94,6 +111,11 @@ def main():
                 ip_templist.append(ip)
 
     return list(set(ip_templist))
+
+
+if sshd_config_scan():
+    LINES_TO_TEST.append("Failed password for root from")
+    print("Enabled 'Failed password for root'")
 
 
 if __name__ == "__main__":
