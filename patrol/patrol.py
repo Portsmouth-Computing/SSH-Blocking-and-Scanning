@@ -83,7 +83,7 @@ def sshd_config_scan():
     with open("/etc/ssh/sshd_config") as file:
         for line in file:
             if "PermitRootLogin" in line:
-                line = line.split(" ")
+                line = line.strip().split(" ")
                 print(line)
                 if line[1].lower() is "no":
                     return True
