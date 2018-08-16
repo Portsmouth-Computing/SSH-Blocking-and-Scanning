@@ -38,7 +38,8 @@ IGNORED_LINE_CONTENTS = [" CRON[",
                          "check pass; user unknown",
                          "Too many authentication failures",
                          "Connection closed by",
-                         "pam_unix(sshd:auth): authentication failure"]
+                         "pam_unix(sshd:auth): authentication failure",
+                         "Disconnected from "]
 
 LINES_TO_TEST = ["Failed password for invalid user",
                  "Unable to negotiate with",
@@ -83,6 +84,7 @@ def sshd_config_scan():
         for line in file:
             if "PermitRootLogin" in line:
                 line = line.split(" ")
+                print(line)
                 if line[1].lower() is "no":
                     return True
                 else:
