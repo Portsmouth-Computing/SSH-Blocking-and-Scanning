@@ -54,6 +54,8 @@ LINES_TO_TEST = ["Failed password for invalid user",
                  "Received disconnect from",
                  "Invalid user  "]
 
+AUTH_LOG_LOCATION = "/var/log/auth.log"
+
 
 def regex_check(string):
     ip = re_ipv4.search(string)
@@ -71,7 +73,7 @@ def alt_main():
     ip_templist = []
     not_found_lines = []
 
-    with open("/var/log/auth.log") as file:
+    with open(AUTH_LOG_LOCATION) as file:
         for line in file:
             if any(line_part in line for line_part in LINES_TO_TEST):
                 ip = regex_check(line.strip())
@@ -119,15 +121,12 @@ def main():
                 ip = ip.group("address")
                 ip_templist.append(ip)
 
-    return list(set(ip_templist))
-
-
-if sshd_config_scan():
-    LINES_TO_TEST.append("Failed password for root from")
-    print("Enabled 'Failed password for root'")
+    return set(ip_templist)
 
 
 if __name__ == "__main__":
+    LINES_TO_TEST.append("Failed password for root from")
+    print("Enabled 'Failed password for root'")
     ip_temp_list, not_found_lines = alt_main()
     print(len(ip_temp_list))
     for line in not_found_lines:
