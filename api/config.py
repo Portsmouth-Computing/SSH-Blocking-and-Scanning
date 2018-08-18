@@ -31,8 +31,6 @@ from ruamel import yaml
 
 class Config(collections.Mapping):
     """
-    Mousey's Configuration.
-
     Parameters
     ----------
     config : dict
