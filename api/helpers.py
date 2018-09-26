@@ -84,14 +84,16 @@ async def fetch_address_info(address, *, conn, session, token):
     country_code = data.get('country', '??')
     org = data.get('org', '??')
     region = data.get('region', '??')
+    loc = data.get('loc', '??')
 
     await conn.execute(
-        'INSERT INTO ip_storage(ip, country_code, city, region, org) VALUES ($1, $2, $3, $4, $5)',
+        'INSERT INTO ip_storage(ip, country_code, city, region, org, loc) VALUES ($1, $2, $3, $4, $5, $6)',
         address,
         country_code,
         city,
         region,
         org,
+        loc
     )
 
     result = {
@@ -101,6 +103,7 @@ async def fetch_address_info(address, *, conn, session, token):
         'city': city,
         'region': region,
         'org': org,
+        'loc': loc,
         'last_updated': datetime.datetime.utcnow()
     }
 
