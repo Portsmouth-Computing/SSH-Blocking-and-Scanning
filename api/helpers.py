@@ -92,7 +92,7 @@ async def update_address_info(address, *, conn, session, token):
     loc = data.get('loc', '??')
 
     await conn.execute(
-        'UPDATE ip_storage WHERE ip = $1  SET loc = $2',
+        'UPDATE ip_storage SET loc = $2 WHERE ip = $1',
         address,
         loc
     )
