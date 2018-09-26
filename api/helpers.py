@@ -64,7 +64,8 @@ async def fetch_ip_info(address, *, conn, session, token):
         return format_response(info)
     except KeyError as KE:
         log.info("KeyError {}".format(KE))
-        info = await fetch_address_info(address, conn=conn, session=session, token=token)
+        info = await update_address_info(address, conn=conn, session=session, token=token)
+        log.info("Updated loc for {}".format(address))
         return format_response(info)
 
 
@@ -78,6 +79,36 @@ async def fetch_cached_info(address, *, conn):
 
     await conn.execute('UPDATE ip_storage SET accessed = ip_storage.accessed + 1 WHERE ip = $1', address)
     return dict(record)
+
+
+async def update_address_info(address, *, conn, session, token):
+    async with session.get(f'https://www.ipinfo.io/{address}/json?token={token}') as resp:
+        data = await resp.json()
+
+    city = data.get('city', '??')
+    country_code = data.get('country', '??')
+    org = data.get('org', '??')
+    region = data.get('region', '??')
+    loc = data.get('loc', '??')
+
+    await conn.execute(
+        'UPDATE ip_storage WHERE ip = $1  SET loc = $2',
+        address,
+        loc
+    )
+
+    result = {
+        'ip': ipaddress.ip_address(address),
+        'country_code': country_code,
+        'accessed': 1,
+        'city': city,
+        'region': region,
+        'org': org,
+        'loc': loc,
+        'last_updated': datetime.datetime.utcnow()
+    }
+
+    return result
 
 
 async def fetch_address_info(address, *, conn, session, token):
