@@ -60,8 +60,12 @@ async def fetch_ip_info(address, *, conn, session, token):
     else:
         log.info(f'IP info for address "{address}" not cached, fetching ..')
         info = await fetch_address_info(address, conn=conn, session=session, token=token)
-
-    return format_response(info)
+    try:
+        return format_response(info)
+    except KeyError as KE:
+        log.info(KE)
+        info = await fetch_address_info(address, conn=conn, session=session, token=token)
+        return format_response(info)
 
 
 async def fetch_cached_info(address, *, conn):
