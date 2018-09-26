@@ -131,6 +131,7 @@ def format_response(info):
         'country_code': country_code,
         'region': info['region'],
         'org': info['org'],
+        'loc': info['loc']
     }
 
     if isinstance(ip, ipaddress.IPv6Address):
