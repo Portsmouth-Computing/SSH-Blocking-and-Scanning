@@ -71,7 +71,7 @@ async def fetch_ip_info(address, *, conn, session, token):
 
 async def fetch_cached_info(address, *, conn):
     record = await conn.fetchrow(
-        'SELECT ip, country_code, accessed, city, region, org, last_updated FROM ip_storage WHERE ip = $1', address
+        'SELECT ip, country_code, accessed, city, region, org, last_updated, loc FROM ip_storage WHERE ip = $1', address
     )
 
     if record is None:
