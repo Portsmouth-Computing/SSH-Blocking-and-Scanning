@@ -63,7 +63,7 @@ async def fetch_ip_info(address, *, conn, session, token):
     try:
         return format_response(info)
     except KeyError as KE:
-        log.info(KE)
+        log.info("KeyError {}".format(KE))
         info = await fetch_address_info(address, conn=conn, session=session, token=token)
         return format_response(info)
 
