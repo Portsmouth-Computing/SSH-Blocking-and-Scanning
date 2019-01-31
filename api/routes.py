@@ -71,7 +71,7 @@ async def get_ip_info(request):
 async def get_own_ip_info(request):
     app = request.app
     address = request.headers.get('CF-Connecting-IP') or request.headers.get('X-Forwarded-For') or request.ip
-    return sanic.response.json(await fetch_ip_info(address, conn=app.db, session=app.session, token=app.cfg.token))
+    return sanic.response.json({address: await fetch_ip_info(address, conn=app.db, session=app.session, token=app.cfg.token)})
 
 
 @bp.route('/stats', methods=['GET'])
