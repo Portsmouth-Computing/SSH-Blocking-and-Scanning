@@ -24,13 +24,11 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 """
 
+import ipaddress
 import itertools
+import logging
 
 import sanic
-
-import ipaddress
-
-import logging
 
 from .helpers import fetch_ip_info, fetch_lookup_stats
 
@@ -67,6 +65,13 @@ async def get_ip_info(request):
     return sanic.response.json(
         {x: await fetch_ip_info(x, conn=app.db, session=app.session, token=app.cfg.token) for x in set(addresses)}
     )
+
+
+@bp.route("/ip/info/me", methods=["GET"])
+async def get_own_ip_info(request):
+    app = request.app
+    address = request.headers.get('CF-Connecting-IP') or request.headers.get('X-Forwarded-For') or request.ip
+    return sanic.response.json(await fetch_ip_info(address, conn=app.db, session=app.session, token=app.cfg.token))
 
 
 @bp.route('/stats', methods=['GET'])
