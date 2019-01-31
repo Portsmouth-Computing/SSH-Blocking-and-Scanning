@@ -84,4 +84,5 @@ async def get_ip_stats(request):
         except (AttributeError, KeyError):
             countries = None
 
-    return sanic.response.json(await fetch_lookup_stats(countries, conn=request.app.db))
+    return sanic.response.json(await fetch_lookup_stats(countries, conn=request.app.db),
+                               headers={"Access-Control-Allow-Origin": "*"})
