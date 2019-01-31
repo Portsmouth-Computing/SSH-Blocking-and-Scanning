@@ -16,9 +16,6 @@ hosts_file_storage = []
 BACKED_UP_IP_LIST = []
 
 ip_list = patrol.main()
-print("IP LIST")
-print(ip_list)
-print(len(ip_list))
 
 with open("/etc/hosts.deny") as file:
     for line in file:
@@ -41,9 +38,6 @@ with open("/etc/hosts.deny") as file:
                     print(temp_line, re_luma.search(temp_line))
         else:
             line_counter += 1
-print("BACKED UP")
-print(sorted(BACKED_UP_IP_LIST))
-print(len(BACKED_UP_IP_LIST))
 
 improved_ip_list = []
 for ip in ip_list:
@@ -62,13 +56,7 @@ for ip_address in list(process_list.json().keys()):
             UNSAFE_IP_LIST.append(ip_address)
 
 SET_IP_LIST = set(BACKED_UP_IP_LIST + UNSAFE_IP_LIST)
-print("SET IP")
-print(len(SET_IP_LIST))
-temp_ip = []
-for ip in ip_list:
-    if ip not in BACKED_UP_IP_LIST:
-        temp_ip.append(ip)
-print(len(temp_ip))
+
 with open("/etc/hosts.deny", "w") as file:
     for line in hosts_file_storage:
         file.write(line)
