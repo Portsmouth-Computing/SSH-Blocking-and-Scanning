@@ -29,6 +29,7 @@ import itertools
 import logging
 
 import sanic
+import sanic.response
 
 from .helpers import fetch_ip_info, fetch_lookup_stats
 
