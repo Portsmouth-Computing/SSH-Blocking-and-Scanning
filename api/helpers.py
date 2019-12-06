@@ -132,7 +132,8 @@ async def update_full_address_info(address, *, conn, session, token):
         city = $2,
         region = $3,
         org = $4,
-        loc = $5
+        loc = $5,
+        last_updated = NOW()
         WHERE ip = $6
         """,
         country_code, city, region, org, loc, address
