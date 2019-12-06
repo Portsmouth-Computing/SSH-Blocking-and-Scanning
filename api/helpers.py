@@ -56,7 +56,11 @@ async def fetch_ip_info(address, *, conn, session, token):
     info = await fetch_cached_info(address, conn=conn)
 
     if info is not None:
-        log.info(f'IP info for address "{address}" cached.')
+        if (datetime.datetime.now() - info.get("last_updated")) > datetime.timedelta(days=7):
+            log.info(f'IP info for address "{address}" old, updating ..')
+            info = await update_full_address_info(address, conn=conn, session=session, token=token)
+        else:
+            log.info(f'IP info for address "{address}" cached.')
     else:
         log.info(f'IP info for address "{address}" not cached, fetching ..')
         info = await fetch_address_info(address, conn=conn, session=session, token=token)
@@ -75,7 +79,7 @@ async def fetch_cached_info(address, *, conn):
     )
 
     if record is None:
-        return
+        return None
 
     await conn.execute('UPDATE ip_storage SET accessed = ip_storage.accessed + 1 WHERE ip = $1', address)
     return dict(record)
@@ -95,6 +99,43 @@ async def update_address_info(address, *, conn, session, token):
         'UPDATE ip_storage SET loc = $2 WHERE ip = $1',
         address,
         loc
+    )
+
+    result = {
+        'ip': ipaddress.ip_address(address),
+        'country_code': country_code,
+        'accessed': 1,
+        'city': city,
+        'region': region,
+        'org': org,
+        'loc': loc,
+        'last_updated': datetime.datetime.utcnow()
+    }
+
+    return result
+
+
+async def update_full_address_info(address, *, conn, session, token):
+    async with session.get(f'https://www.ipinfo.io/{address}/json?token={token}') as resp:
+        data = await resp.json()
+
+    city = data.get('city', '??')
+    country_code = data.get('country', '??')
+    org = data.get('org', '??')
+    region = data.get('region', '??')
+    loc = data.get('loc', '??')
+
+    await conn.execute(
+        """
+        UPDATE ip_storage
+        SET country_code = $1,
+        city = $2,
+        region = $3,
+        org = $4,
+        loc = $5
+        WHERE ip = $6
+        """,
+        country_code, city, region, org, loc, address
     )
 
     result = {
