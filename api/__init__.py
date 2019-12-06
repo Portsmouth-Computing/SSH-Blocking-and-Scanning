@@ -25,6 +25,7 @@ SOFTWARE.
 """
 
 import asyncio
+import logging
 import signal
 
 import aiohttp
@@ -33,6 +34,8 @@ import sanic
 
 from .config import Config
 from .routes import bp as api_routes
+
+log = logging.getLogger(__name__)
 
 
 class Server:
@@ -55,7 +58,12 @@ class Server:
         return cls(Config.from_file(path), loop=loop)
 
     async def start(self, *args, **kwargs):
-        self.db = self.app.db = await asyncpg.create_pool(**self.config.postgres)
+        try:
+            self.db = self.app.db = await asyncpg.create_pool(**self.config.postgres)
+        except asyncpg.exceptions.CannotConnectNowError as AECCNE:
+            log.warning(AECCNE)
+            await asyncio.sleep(5)
+            self.db = self.app.db = await asyncpg.create_pool(**self.config.postgres)
 
         await self.app.create_server(*args, **kwargs)
 
