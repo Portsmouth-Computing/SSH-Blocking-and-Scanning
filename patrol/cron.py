@@ -8,7 +8,7 @@ import patrol
 SAFE_LIST = ["GB"]
 UNSAFE_IP_LIST = []
 re_luma = re.compile(r'(?P<address>(?:[a-f\d]{1,4}[\.:]){1,7}[a-f\d]{1,4})')
-static_info = ["\n", "####### This section was created by a program to block irritating IP's", "\n"]
+static_info = ["####### This section was created by a program to block irritating IP's", "\n"]
 hosts_file_contents = []
 line_counter = 0
 info_line = 0
